@@ -1,0 +1,18 @@
+# Include all Python package files and JSON files
+include src/airtable_sync/**/*.py
+include src/airtable_sync/*.json
+
+# Include README and CHANGELOG files
+include README.md
+include CHANGELOG.md
+
+# Include any documentation files
+recursive-include doc *
+
+# Include requirements.txt
+include requirements.txt
+
+# Include scripts from the release folder
+include release/build_package.sh
+
+# Include any other necessary files (if applicable)

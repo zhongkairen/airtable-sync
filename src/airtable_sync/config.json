@@ -1,0 +1,20 @@
+{
+    "_comment": "This is an example configuration",
+    "airtable": {
+        "baseId": "appA1B2CDE5F6G7H8",
+        "tableId": "tblI9J0K1L2M3N4c6",
+        "_comment": "optional viewName in the table",
+        "viewName": "Rainbow Six team"
+    },
+    "github": {
+        "owner": "Your-Organization",
+        "repo": "nato-rainbow-six-team",
+        "project": "Black Star",
+
+        "_comment": "mapping from github field to airtable field",
+        "fieldMap": {
+            "Start Date": "Engineering Start Date",
+            "Delivery Date": "Engineering Delivery Date"
+        }
+    }
+}
