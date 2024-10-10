@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # Enables manual trigger
   push:
     branches:
-      - feature/airtable-sync # Run only on this feature branch
+      - feature/* # Run only on feature branches
 
 jobs:
   run-python:
@@ -22,13 +22,14 @@ jobs:
           python-version: "3.10"
 
       - name: Install dependencies
-        working-directory: automation
+        working-directory: .
         run: |
+          pwd
           python -m pip install --upgrade pip
           pip install -r airtable_sync/requirements.txt
 
       - name: Run Airtable Sync
-        working-directory: automation
+        working-directory: .
         env:
           GITHUB_TOKEN: ${{ secrets.AIRSYNC_GITHUB_TOKEN }}
           AIRTABLE_TOKEN: ${{ secrets.AIRSYNC_AIRTABLE_TOKEN }}
