@@ -1,0 +1,18 @@
+{
+    "airtable": {
+        "baseId": "appM1P3VYxuftmwub",
+        "tableId": "tblFxnqURZZEiTMkc",
+        "viewName": "uAds Ad Request"
+    },
+    "github": {
+        "owner": "Unity-Technologies",
+        "repo": "mz-ad-request-team",
+        "project": "Ad Request",
+
+        "_comment": "mapping from github field to airtable field",
+        "fieldMap": {
+            "Start Date": "Engineering Start Date",
+            "Delivery Date": "Engineering Delivery Date"
+        }
+    }
+}

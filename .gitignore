@@ -1,0 +1,12 @@
+.DS_Store
+*.pyc
+*.pyo
+*.swp
+.env
+.idea
+.python-version
+.secrets
+.venv/
+.vscode/
+__pycache__/
+
