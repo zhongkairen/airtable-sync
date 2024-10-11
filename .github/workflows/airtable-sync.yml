@@ -14,26 +14,70 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - name: Install dependencies
-        working-directory: .
+      - name: Download latest wheel file
+        id: download_wheel
         run: |
-          pwd
-          python -m pip install --upgrade pip
-          pip install -r airtable_sync/requirements.txt
+          echo "pwd=`pwd`"
+          wheel_file_url=$(curl -s https://api.github.com/repos/zhongkairen/airtable-sync/releases/latest | jq -r '.assets[] | select(.name | test("airtable_sync-.*\\.whl")) | .browser_download_url')
+          wheel_file_name=$(basename $wheel_file_url)
+          curl -L -o $wheel_file_name $wheel_file_url || { echo "Failed to download wheel file"; exit 1; }
+          echo "airtable_sync_wheel_file_name=$wheel_file_name" >> $GITHUB_ENV
+
+      - name: Cache wheel file
+        uses: actions/cache@v3
+        with:
+          path: |
+            ${{ env.airtable_sync_wheel_file_name }}
+          key: ${{ runner.os }}-wheel-${{ hashFiles('**/airtable_sync-*.whl') }}
+
+      - name: Install package
+        run: |
+          wheel_file_name=${{ env.airtable_sync_wheel_file_name }}
+          echo "pwd=`pwd`" }}
+          echo "pwd=`pwd`"
+          ls -lh $wheel_file_name
+          ls -lah
+          # python -m pip install --upgrade pip
+          pip install $wheel_file_name
+
+      - name: Create config file
+        run: |
+          echo '{
+              "airtable": {
+                  "baseId": "appM1P3VYxuftmwub",
+                  "tableId": "tblFxnqURZZEiTMkc",
+                  "viewName": "uAds Ad Request"
+              },
+              "github": {
+                  "owner": "Unity-Technologies",
+                  "repo": "mz-ad-request-team",
+                  "project": "Ad Request",
+                  "fieldMap": {
+                      "Start Date": "Engineering Start Date",
+                      "Delivery Date": "Engineering Delivery Date"
+                  }
+              }
+          }' > $GITHUB_WORKSPACE/config.json
 
       - name: Run Airtable Sync
-        working-directory: .
         env:
           GITHUB_TOKEN: ${{ secrets.AIRSYNC_GITHUB_TOKEN }}
           AIRTABLE_TOKEN: ${{ secrets.AIRSYNC_AIRTABLE_TOKEN }}
         run: |
           python --version
+          which python
+
+          ls -lh ./config.json
+
+          cat ./config.json
+          
+          DIR=$(dirname $(which python3))
+          echo $PATH | grep -q "$DIR" && echo "In PATH" || echo "$DIR not in PATH"
+
           pwd
-          python -m airtable_sync -v
+          airtable-sync -v
