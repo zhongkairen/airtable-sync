@@ -11,46 +11,12 @@ Currently only a single GitHub repository is checked against the records in the 
 ## Installation and Setup
 Unless otherwise stated, all the commands are run in the parent directory of the package, i.e. one level up from this file.
 ### Setting up Python
-Requires python 3.10. In the project root directory, run
-```bash
-brew install pyenv
-brew install pyenv-virtualenv
+See [details in doc](doc/py-env.md)
 
-cd src
-pyenv versions
-pyenv install  3.10.15
-
-### this creates artifact .python-version in the current folder
-pyenv local  3.10.15
-****
+### Installing dependencies
+Download the wheel file and install with pip:
 ```
-Add pyenv to path in `~/.zshrc`.
-```bash
-# Add Homebrew's bin to the PATH
-export PATH="/opt/homebrew/bin:$PATH"
-
-# Load pyenv
-eval "$(pyenv init --path)"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-```
-Then run `source ~/.zshrc`.
-Verify python version
-```bash
-python --version
-Python 3.10.15
-```
-
-### Setting up Python virtual environment
-Set up python virtual environment. change to the parent dir of the module i.e. `src`, then create a virtual env and activate it.
-```bash
-python -m venv .venv
-source .venv/bin/activate
-```
-
-Install dependencies.
-```
-pip install -r airtable_sync/requirements.txt
+pip install airtable_sync-0.1.0-py3-none-any.whl
 ```
 
 ## Running the tool
@@ -105,7 +71,7 @@ export AIRTABLE_TOKEN_PATH=/path/to/your/gh.read.repo.project.user.pat
 Replace with proper file names if you in the earlier step with different names.
 
 Alternatively put tokens directly in the file, not recommended as it's less secure.\
-`Example`
+❗`Example`❗
 ```bash
 export GITHUB_TOKEN=ghp_2n45dH8TJ3QrZ9b1hYV0Ck6Fp8AeGz5wXm
 export AIRTABLE_TOKEN=pat4KwZLQ5yFmsJDa.22cd1ec678943216ae4b874f1d8814223c71a56d9d58371c0b1f8b3ef9e4a2f
@@ -160,7 +126,16 @@ Change the repo name and project name as needed, e.g. if your GitHub repo base h
 ```
 
 ### Run
-Navigate to the parent directory of the package.
+Run with the module name
 ```
 python -m airtable_sync
+```
+Alternatively run directly with the command
+```
+airtable-sync
+```
+
+Need to ensure the Python bin folder is in the `PATH`.
+```
+DIR=$(dirname $(which python3));echo $PATH | grep -q "$DIR" && echo "In PATH" || echo "$DIR not in PATH"
 ```
