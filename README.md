@@ -85,20 +85,43 @@ Set the proper file permission.
 ```bash
 chmod 600 ~/.ssh/gh.read.repo.project.user.pat
 ```
+### Configuration file
+To use the module, a `config.json` file must be placed in either the current working directory or the package installation directory.
+
+**Example configuration file**\
+An example `config.json` file is provided in the root directory of the source package.
+
+1. **Copy** the example file to your chosen location.
+1. **Edit** the file as needed to fit your setup.
+
+See the following sections for details on which settings to change.
 
 ### Set up tokens
-Create a `.env` file with the content
+Create environment variables
 ```bash
-GITHUB_TOKEN_PATH=/path/to/your/airtable.records_wr.schema_base_r.github_sync_base.pat
-AIRTABLE_TOKEN_PATH=/path/to/your/gh.read.repo.project.user.pat 
+export GITHUB_TOKEN_PATH=/path/to/your/airtable.records_wr.schema_base_r.github_sync_base.pat
+export AIRTABLE_TOKEN_PATH=/path/to/your/gh.read.repo.project.user.pat 
 ```
 Replace with proper file names if you in the earlier step with different names.
 
 Alternatively put tokens directly in the file, not recommended as it's less secure.\
 `Example`
 ```bash
-GITHUB_TOKEN=ghp_2n45dH8TJ3QrZ9b1hYV0Ck6Fp8AeGz5wXm
-AIRTABLE_TOKEN=pat4KwZLQ5yFmsJDa.22cd1ec678943216ae4b874f1d8814223c71a56d9d58371c0b1f8b3ef9e4a2f
+export GITHUB_TOKEN=ghp_2n45dH8TJ3QrZ9b1hYV0Ck6Fp8AeGz5wXm
+export AIRTABLE_TOKEN=pat4KwZLQ5yFmsJDa.22cd1ec678943216ae4b874f1d8814223c71a56d9d58371c0b1f8b3ef9e4a2f
+```
+
+If nothing has been exported to env, similar configuration can be done in `config.json`.
+```json
+  "github": {
+    "token_path": "/path/to/your/gh.read.repo.project.user.pat",
+  }
+```
+or directly using the token
+```json
+"airtable": {
+  "token": "pat4KwZLQ5yFmsJDa.22cd1ec678943216ae4b874f1d8814223c71a56d9d58371c0b1f8b3ef9e4a2f",
+}
 ```
 
 #### GitHub secrets

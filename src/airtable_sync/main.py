@@ -1,9 +1,12 @@
 import argparse
+import json
 import os
 from .custom_logger import CustomLogger
 from .github.config import GitHubConfig
 from .airtable.config import AirtableConfig
 from .airtable_sync import AirtableSync
+
+logger = CustomLogger(__name__)
 
 
 def parse_arguments():
@@ -34,16 +37,40 @@ def parse_arguments():
     return log_level
 
 
+def get_config_file_path():
+    # Order of lookup:
+    #   current working directory,
+    #   same directory as the script
+    CONFIG_FILE_NAME = 'config.json'
+    current_dir = os.getcwd()
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Check for the config file in the current directory first
+    current_file_path = os.path.join(current_dir, CONFIG_FILE_NAME)
+    if os.path.isfile(current_file_path):
+        return current_file_path
+
+    # If not found, check in the script directory
+    script_file_path = os.path.join(script_dir, CONFIG_FILE_NAME)
+    if os.path.isfile(script_file_path):
+        return script_file_path
+
+    raise FileNotFoundError(
+        f"{CONFIG_FILE_NAME} not found in {current_dir} and {script_dir}.")
+
+
 def main():
     log_level = parse_arguments()
     CustomLogger.setup_logging(log_level)
 
-    CONFIG_FILE = os.path.join(os.path.dirname(
-        os.path.abspath(__file__)), 'config.json')
-
-    # Load configurations
-    airtable_config = AirtableConfig(CONFIG_FILE, 'AIRTABLE_TOKEN')
-    github_config = GitHubConfig(CONFIG_FILE, 'GITHUB_TOKEN')
+    try:
+        with open(get_config_file_path()) as config_file:
+            config_json = json.load(config_file)
+            airtable_config = AirtableConfig(config_json.get('airtable'))
+            github_config = GitHubConfig(config_json.get('github'))
+    except Exception as e:
+        logger.error(f"Error reading configuration file: {e}")
+        return
 
     # Initialize the AirtableSync class and read records
     airtable_sync = AirtableSync(airtable_config, github_config)

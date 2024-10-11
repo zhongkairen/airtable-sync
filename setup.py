@@ -10,7 +10,7 @@ with open("requirements.txt", "r") as fh:
 
 setup(
     name="airtable_sync",
-    version="0.1.6",
+    version="0.1.7",
     author="Zhongkai Ren",
     author_email="zhongkai.ren@unity3d.com",
     description="A Python package to synchronize GitHub issues with Airtable.",
