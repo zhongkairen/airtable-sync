@@ -15,3 +15,5 @@ dist/
 *.egg-info/
 # Ignore live configuration file in use
 **/config.json
+.tox/
+tox.ini
