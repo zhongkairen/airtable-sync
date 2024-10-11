@@ -14,4 +14,4 @@ build/
 dist/
 *.egg-info/
 # Ignore live configuration file in use
-src/**/config.json
+**/config.json
