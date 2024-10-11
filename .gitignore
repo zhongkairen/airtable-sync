@@ -9,11 +9,17 @@
 .venv/
 .vscode/
 __pycache__/
+
 # Ignore build and distribution directories
 build/
 dist/
 *.egg-info/
+
 # Ignore live configuration file in use
-**/config.json
+config.json
+# Allow config.json in .github/workflows
+!.github/workflows/config.json
+
+# Ignore Python test artifacts
 .tox/
 tox.ini
