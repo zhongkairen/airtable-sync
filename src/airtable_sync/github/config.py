@@ -1,8 +1,6 @@
-from dataclasses import dataclass
 from ..user_token import UserToken
 
 
-@dataclass
 class GitHubConfig:
     token: str
     project_name: str
