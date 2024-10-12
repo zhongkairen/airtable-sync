@@ -46,8 +46,8 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           # Check out the status branch
-          git fetch origin {{ env.STATUS_BRANCH }}
-          git checkout {{ env.STATUS_BRANCH }}
+          git fetch origin ${{ env.STATUS_BRANCH }}
+          git checkout ${{ env.STATUS_BRANCH }}
 
           last_commit_message=$(git log -1 --pretty=%B)
           if [[ "$last_commit_message" != "${STATUS_COMMIT_MESSAGE}" ]]; then
@@ -56,7 +56,7 @@ jobs:
             cp status.json ${{ env.STATUS_FILE }}
             git add ${{ env.STATUS_FILE }}
             git commit --amend -m "${STATUS_COMMIT_MESSAGE}"
-            git push --force origin {{ env.STATUS_BRANCH }}
+            git push --force origin ${{ env.STATUS_BRANCH }}
           fi
 
       - name: Refresh the badge
