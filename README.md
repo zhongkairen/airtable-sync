@@ -1,5 +1,5 @@
 [![Unit Tests Status](https://github.com/zhongkairen/airtable-sync/actions/workflows/run-unit-tests.yml/badge.svg)](https://github.com/zhongkairen/airtable-sync/actions/workflows/run-unit-tests.yml)
-
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fzhongkairen%2Fairtable-sync%2Fstatus%2Fsync-status.json)](https://github.com/zhongkairen/airtable-sync/actions/workflows/airtable-sync.yml) 
 
 # airtable_sync - Sync between GitHub and Airtable
 A Python module to sync GitHub issues to Airtable records.
