@@ -12,11 +12,6 @@ jobs:
 
     steps:
       - name: Process Status
-      #   run: |
-      #     echo "Received status: ${{ github.event.client_payload.status }}"
-      #     echo "Received timestamp: ${{ github.event.client_payload.timestamp }}"
-
-      # - name: Run status processing script
         uses: actions/github-script@v6
         with:
           script: |
@@ -38,22 +33,11 @@ jobs:
             const fs = require('fs');
             fs.writeFileSync(fileName, JSON.stringify(statusJson, null, 2));
 
-            const artifact = require('@actions/artifact');
-            const artifactClient = artifact.create();
-            const artifactName = 'status-artifact';
-            const files = [fileName];
-            const rootDirectory = '.';
-            const options = {
-              continueOnError: false
-            };
-
-            artifactClient.uploadArtifact(artifactName, files, rootDirectory, options)
-              .then(response => {
-                console.log(`Artifact ${artifactName} has been successfully uploaded.`);
-              })
-              .catch(error => {
-                console.error(`Failed to upload artifact ${artifactName}:`, error);
-              });
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: status-artifact
+          path: status.json
 
       # - name: Check out status branch
       #   id: checkout_status_branch
