@@ -65,9 +65,9 @@ jobs:
           script: |
             const shieldsIoPrefix = "https://img.shields.io/endpoint?url=";
             const jsonUrl = `https://raw.githubusercontent.com/${{ github.repository }}/status/${{ env.STATUS_FILE }}`;
-
-            const noCache = Date.now();  // Generate a unique timestamp as a cache-buster
-            const url = `${shieldsIoPrefix}${encodeURIComponent(jsonUrl)}?no_cache=${noCache}`;
+            const cacheBuster = `?${Math.random().toString(36).substr(2, 9)}`;  // Generate a random string for the query
+            const url = `${shieldsIoPrefix}${encodeURIComponent(jsonUrl)}${cacheBuster}`;
+            console.log(`Reloading badge from: ${url}`);
 
             // Use fetch to make the request
             const response = await fetch(url, {
@@ -75,6 +75,7 @@ jobs:
               headers: {
                 'Accept': 'application/json',
               },
+              cache: 'no-store'
             });
 
             if (!response.ok) {
