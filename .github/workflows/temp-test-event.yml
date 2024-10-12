@@ -1,0 +1,35 @@
+name: Trigger status update event
+
+on:
+  workflow_dispatch: # Enables manual trigger
+
+jobs:
+  run-python:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      - name: Update status
+        env:
+          GITHUB_TOKEN: ${{ secrets.AIRSYNC_GITHUB_TOKEN }}
+        run: |
+          STATUS="synced"
+          CURRENT_SECOND=$(date +%S)
+            SECOND_DIGIT=${CURRENT_SECOND:1:1}
+            if [[ $SECOND_DIGIT =~ [13579] ]]; then
+            STATUS="failed"
+          fi
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          curl -X POST \
+            -H "Authorization: token ${{ env.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/dispatches \
+            -d '{
+              "event_type": "sync_status_update",
+              "client_payload": {
+                "status": "'"${STATUS}"'",
+                "timestamp": "'"${TIMESTAMP}"'"
+              }
+            }'
+
