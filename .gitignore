@@ -23,3 +23,6 @@ config.json
 # Ignore Python test artifacts
 .tox/
 tox.ini
+
+# Ignore test coverage reports
+.coverage/
