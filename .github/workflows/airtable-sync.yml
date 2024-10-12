@@ -11,7 +11,9 @@ on:
 
 jobs:
   run-python:
+    permissions: write-all
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     steps:
       - name: Set up Python
@@ -36,6 +38,7 @@ jobs:
           key: ${{ runner.os }}-wheel-${{ hashFiles('**/airtable_sync-*.whl') }}
 
       - name: Install package
+        if: ${{ success() }}
         run: |
           wheel_file_name=${{ env.airtable_sync_wheel_file_name }}
           echo "pwd=`pwd`" }}
@@ -46,6 +49,7 @@ jobs:
           pip install $wheel_file_name
 
       - name: Create config file
+        if: ${{ success() }}
         run: |
           echo '{
               "airtable": {
@@ -65,6 +69,8 @@ jobs:
           }' > $GITHUB_WORKSPACE/config.json
 
       - name: Run Airtable Sync
+        id: run-airtable-sync
+        if: ${{ success() }}
         env:
           GITHUB_TOKEN: ${{ secrets.AIRSYNC_GITHUB_TOKEN }}
           AIRTABLE_TOKEN: ${{ secrets.AIRSYNC_AIRTABLE_TOKEN }}
@@ -81,3 +87,27 @@ jobs:
 
           pwd
           airtable-sync -v
+
+      - name: Update status
+        if: always() # Ensures this runs even if previous steps fail
+        env:
+          GITHUB_TOKEN: ${{ secrets.AIRSYNC_GITHUB_TOKEN }}
+        run: |
+          echo "previous step result: ${{ steps.run-airtable-sync.outcome }}"
+          STATUS="failed"
+          if [[ ${{ steps.run-airtable-sync.outcome }} == "success" ]]; then
+            STATUS="synced"
+          fi
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          curl -X POST \
+            -H "Authorization: token ${{ env.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/dispatches \
+            -d '{
+              "event_type": "sync_status_update",
+              "client_payload": {
+                "status": "'"${STATUS}"'",
+                "timestamp": "'"${TIMESTAMP}"'"
+              }
+            }'
+
