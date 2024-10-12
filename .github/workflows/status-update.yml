@@ -20,14 +20,15 @@ jobs:
           script: |
             const status = context.payload.client_payload.status;
             const timestamp = new Date(context.payload.client_payload.timestamp);
+            const timeText = timestamp.toISOString().split('.')[0]+"Z";
 
             console.log(`Status: ${status}`);
-            console.log(`Timestamp: ${timestamp.toISOString()}`);
+            console.log(`Timestamp: ${timeText}`);
 
             const statusJson = {
               schemaVersion: 1,
               label: "last sync",
-              message: `${status} ${timestamp.toISOString()}`,
+              message: `${status} ${timeText}`,
               color: status === "synced" ? "green" : "red"
             };
 
