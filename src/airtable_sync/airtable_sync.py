@@ -99,7 +99,7 @@ class AirtableSync:
 
     def _prep_sync(self):
         # Verify the fields to be synced
-        if not self._verify_sync_fields() or not self._verify_record_field():
+        if not (self._verify_sync_fields() and self._verify_record_field()):
             raise Exception(
                 "Sync aborted due to missing fields in Airtable table schema.")
 
