@@ -39,48 +39,23 @@ jobs:
           name: status-artifact
           path: status.json
 
-      # - name: Check out status branch
-      #   id: checkout_status_branch
-      #   if: always() # Ensures this runs even if previous steps fail
-      #   run: |
-      #     git config --global user.name "github-actions[bot]"
-      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Check out status branch
+        id: checkout_status_branch
+        if: always() # Ensures this runs even if previous steps fail
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-      #     # Check out the status branch
-      #     git fetch origin status
-      #     git checkout status
+          # Check out the status branch
+          git fetch origin status
+          git checkout status
 
-      #     last_commit_message=$(git log -1 --pretty=%B)
-      #     if [[ "$last_commit_message" != "${STATUS_COMMIT_MESSAGE}" ]]; then
-      #       echo "Last commit message is not '${STATUS_COMMIT_MESSAGE}'. Skipping commit."
-      #       exit 1
-      #     fi
-
-      # - name: Update sync-status.json
-      #   if: ${{ steps.checkout_status_branch.outcome == 'success' }}
-      #   run: |
-      #     STATUS="failed"
-      #     COLOR="red"
-      #     if [[ ${{ steps.run-airtable-sync.outcome }} == "success" ]]; then
-      #       STATUS="synced"
-      #       COLOR="green"
-      #     fi
-
-      #     # Get current timestamp
-      #     TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S")
-
-      #     cat <<EOF > sync-status.json
-      #     {
-      #       "schemaVersion": 1,
-      #       "label": "last sync",
-      #       "message": "$STATUS $TIMESTAMP",
-      #       "color": "$COLOR"
-      #     }
-      #     EOF
-
-      # - name: Commit and push changes
-      #   if: ${{ steps.check_commit.outcome == 'success' }}
-      #   run: |
-      #     git add sync-status.json
-      #     git commit --amend -m "${STATUS_COMMIT_MESSAGE}"
-      #     git push --force origin status
+          last_commit_message=$(git log -1 --pretty=%B)
+          if [[ "$last_commit_message" != "${STATUS_COMMIT_MESSAGE}" ]]; then
+            echo "Last commit message is not '${STATUS_COMMIT_MESSAGE}'. Skipping commit."
+          else
+            cp status.json sync-status.json
+            git add sync-status.json
+            git commit --amend -m "${STATUS_COMMIT_MESSAGE}"
+            git push --force origin status
+          fi
