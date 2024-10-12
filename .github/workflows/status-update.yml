@@ -8,6 +8,8 @@ jobs:
   process-status:
     runs-on: ubuntu-latest
     env:
+      STATUS_BRANCH: "status"
+      STATUS_FILE: "sync-status.json"
       STATUS_COMMIT_MESSAGE: "[GitHub Actions Bot] Sync status update"  # Automatic status update commit message
 
     steps:
@@ -33,15 +35,8 @@ jobs:
             };
 
             const fileName = 'status.json';
-
             const fs = require('fs');
             fs.writeFileSync(fileName, JSON.stringify(statusJson, null, 2));
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: status-artifact
-          path: status.json
 
       - name: Check out status branch
         id: checkout_status_branch
@@ -51,15 +46,39 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           # Check out the status branch
-          git fetch origin status
-          git checkout status
+          git fetch origin {{ env.STATUS_BRANCH }}
+          git checkout {{ env.STATUS_BRANCH }}
 
           last_commit_message=$(git log -1 --pretty=%B)
           if [[ "$last_commit_message" != "${STATUS_COMMIT_MESSAGE}" ]]; then
             echo "Last commit message is not '${STATUS_COMMIT_MESSAGE}'. Skipping commit."
           else
-            cp status.json sync-status.json
-            git add sync-status.json
+            cp status.json ${{ env.STATUS_FILE }}
+            git add ${{ env.STATUS_FILE }}
             git commit --amend -m "${STATUS_COMMIT_MESSAGE}"
-            git push --force origin status
+            git push --force origin {{ env.STATUS_BRANCH }}
           fi
+
+      - name: Refresh the badge
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const shieldsIoPrefix = "https://img.shields.io/endpoint?url=";
+            const jsonUrl = `https://raw.githubusercontent.com/${{ github.repository }}/status/${{ env.STATUS_FILE }}`;
+
+            const noCache = Date.now();  // Generate a unique timestamp as a cache-buster
+            const url = `${shieldsIoPrefix}${encodeURIComponent(jsonUrl)}?no_cache=${noCache}`;
+
+            // Use fetch to make the request
+            const response = await fetch(url, {
+              method: 'GET',
+              headers: {
+                'Accept': 'application/json',
+              },
+            });
+
+            if (!response.ok) {
+              console.error(`Failed to fetch badge: ${response.statusText}`);
+            } else {
+              console.log(`Badge reloaded successfully: ${await response.text()}`);
+            }
