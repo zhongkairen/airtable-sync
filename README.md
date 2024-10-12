@@ -1,9 +1,9 @@
+[![Unit Tests Status](https://github.com/zhongkairen/airtable-sync/actions/workflows/run-unit-tests.yml/badge.svg)](https://github.com/zhongkairen/airtable-sync/actions/workflows/run-unit-tests.yml)
 
 
 # airtable_sync - Sync between GitHub and Airtable
 A Python module to sync GitHub issues to Airtable records.
 
-[![Unit Tests](https://github.com/zhongkairen/airtable-sync/actions/workflows/run-unit-tests.yml/badge.svg)](https://github.com/zhongkairen/airtable-sync/actions/workflows/run-unit-tests.yml)
 
 # What this does
 The module first checks the records in a table in an Airtable base, find the linked issues on GitHub and retries the fields that have changed, then it syncs the new values of the updated fields to Airtable.
