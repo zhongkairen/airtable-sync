@@ -111,11 +111,7 @@ class AirtableSync:
 
     def _get_issue(self, record):
         """Retrieve the GitHub issue or create one from an Airtable record."""
-        issue = self.github.get_issue(record.issue_number)
-        if not issue:
-            issue = GitHubIssue(url=record.issue_link)
-            issue.read(self.github)
-        return issue
+        return self.github.fetch_issue(record.issue_number)
 
     def _log_sync_result(self, sync_result: UpdateResult):
         """Log the final sync result based on update counts."""
