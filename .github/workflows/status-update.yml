@@ -42,4 +42,4 @@ jobs:
               ...updatedContent
             });
             console.log(`Updated Gist: ${response.data.html_url}`);
-            console.log(`  files: ${JSON.stringify(response.data.files)}`);
+            console.log(`  files: ${JSON.stringify(response.data.files, null, 2)}`);
