@@ -37,8 +37,7 @@ jobs:
             };
 
             console.log('GitHub API context:', github);
-            const { gists } = github;
-            const response = await gists.update({
+            const response = await github.rest.gists.update({
               gist_id: gistId,
               ...updatedContent
             });
