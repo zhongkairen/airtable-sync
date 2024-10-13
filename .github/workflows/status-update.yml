@@ -17,12 +17,12 @@ jobs:
             const timestamp = new Date(context.payload.client_payload.timestamp);
             const timeText = timestamp.toISOString().split('.')[0]+"Z";
 
-            const payload = {
+            const payload = JSON.stringify({
               schemaVersion: 1,
               label: "last sync",
               message: `${status} ${timeText}`,
               color: status === "synced" ? "green" : "red"
-            };
+            }, null, 2);
             console.log(`Payload: ${payload}`);
 
             const gistId = '26502e2a8b93eedb9cd15229cdee4c59';
@@ -31,17 +31,15 @@ jobs:
             const updatedContent = {
               files: {
                 [fileName]: {
-                  content: JSON.stringify(payload, null, 2)
+                  content: payload
                 }
               }
             };
 
-            try {
-              const response = await github.gists.update({
-                gist_id: gistId,
-                ...updatedContent
-              });
-              console.log(`Updated Gist: ${response.data.html_url}, files: ${response.data.files}`);
-            } catch (error) {
-              console.error("Error updating Gist:", error.response ? error.response.data : error.message);
-            }
+            console.log('GitHub API context:', github);
+            const { gists } = github;
+            const response = await gists.update({
+              gist_id: gistId,
+              ...updatedContent
+            });
+            console.log(`Updated Gist: ${response.data.html_url}, files: ${response.data.files}`);
