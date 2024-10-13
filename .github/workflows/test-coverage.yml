@@ -5,7 +5,8 @@ on:
 
   push:
     branches:
-      - feature/testing
+      - feature/*
+      - main
 
 jobs:
   test_coverage:
@@ -57,9 +58,6 @@ jobs:
           fs.writeFileSync('.coverage/coverage_summary.json', summary);
           return coverageData;
 
-    - name: List files for debugging
-      run: ls -R .coverage
-
     # Upload coverage reports and JSON artifacts
     - name: Upload coverage artifacts
       uses: actions/upload-artifact@v4
@@ -72,6 +70,7 @@ jobs:
           .coverage/coverage_summary.json
 
     - name: Update status badge
+      if: github.ref == 'refs/heads/main' # Run only for the main branch
       uses: actions/github-script@v7
       with:
         github-token: ${{ secrets.AIRSYNC_GIST_TOKEN }}
