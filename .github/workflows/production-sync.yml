@@ -10,7 +10,6 @@ jobs:
   run-python:
     permissions: write-all
     runs-on: ubuntu-latest
-    continue-on-error: true
 
     steps:
       - name: Set up Python
@@ -28,6 +27,13 @@ jobs:
           wheel_file_url=$(curl -s $releases_api_url | jq -r '.assets[] | select(.name | test("airtable_sync-.*\\.whl")) | .browser_download_url')
           wheel_file_name=$(basename $wheel_file_url)
           curl -L -o $wheel_file_name $wheel_file_url || { echo "Failed to download wheel file"; exit 1; }
+
+          # Check if the wheel file was downloaded successfully
+          if [[ ! -f "$wheel_file_name" ]]; then
+            echo "Wheel file not found after download."
+            exit 1
+          fi
+          
           echo "airtable_sync_wheel_file_name=$wheel_file_name" >> $GITHUB_ENV
 
       - name: Cache wheel file
@@ -38,7 +44,6 @@ jobs:
           key: ${{ runner.os }}-wheel-${{ hashFiles('**/airtable_sync-*.whl') }}
 
       - name: Install package
-        if: ${{ success() }}
         run: |
           wheel_file_name=${{ env.airtable_sync_wheel_file_name }}
           echo "pwd=`pwd`" }}
@@ -50,12 +55,14 @@ jobs:
 
       - name: Copy config file
         run: |
-          cp .github/workflows/production-config.json $GITHUB_WORKSPACE/config.json
-
+          src=".github/workflows/production-config.json"
+          raw_url="https://raw.githubusercontent.com/${{ github.repository }}/main/$src"
+          curl -o config.json $raw_url
+          cat config.json
 
       - name: Run Airtable sync
         id: run-airtable-sync
-        if: ${{ success() }}
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.AIRSYNC_GITHUB_TOKEN }}
           AIRTABLE_TOKEN: ${{ secrets.AIRSYNC_AIRTABLE_TOKEN }}
@@ -78,7 +85,8 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const status = '${{ steps.run-airtable-sync.outcome }}' === 'success' ? 'synced' : 'failed';
+            const syncSucceeded = context.steps['run-airtable-sync'].outcome === 'success';
+            const status = syncSucceeded ? 'synced' : 'failed';
             const timestamp = new Date().toISOString();
 
             const response = await github.rest.repos.createDispatchEvent({
@@ -92,3 +100,7 @@ jobs:
             });
 
             console.log(`Status updated: \n${JSON.stringify(response, null, 2)}`);
+
+            if (!syncSucceeded) {
+              throw new Error("Sync failed.");
+            }
