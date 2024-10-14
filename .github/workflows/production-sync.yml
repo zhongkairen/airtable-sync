@@ -33,7 +33,7 @@ jobs:
             echo "Wheel file not found after download."
             exit 1
           fi
-          
+
           echo "airtable_sync_wheel_file_name=$wheel_file_name" >> $GITHUB_ENV
 
       - name: Cache wheel file
@@ -85,7 +85,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const syncSucceeded = context.steps['run-airtable-sync'].outcome === 'success';
+            const syncSucceeded = '${{ steps.run-airtable-sync.outcome }}' === 'success';
             const status = syncSucceeded ? 'synced' : 'failed';
             const timestamp = new Date().toISOString();
 
