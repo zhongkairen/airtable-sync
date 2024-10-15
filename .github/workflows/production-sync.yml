@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # Enables manual trigger
 
 jobs:
-  run-python:
+  run-prd-sync:
     permissions: write-all
     runs-on: ubuntu-latest
 
