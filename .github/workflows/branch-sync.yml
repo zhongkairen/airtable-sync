@@ -1,4 +1,4 @@
-name: Sync from latest source
+name: Sync from latest source branch
 # Syncs triggered on source changes, i.e. pushes and pull requests when a branch is updated or before merged
 on:
   workflow_dispatch: # Enables manual trigger
@@ -11,7 +11,7 @@ on:
       - main # Run on PRs that target the main branch
 
 jobs:
-  run-python:
+  branch-sync:
     runs-on: ubuntu-latest
 
     steps:

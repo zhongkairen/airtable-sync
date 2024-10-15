@@ -7,7 +7,7 @@ on:
   workflow_dispatch: # Enables manual trigger
 
 jobs:
-  run-python:
+  run-prd-sync:
     permissions: write-all
     runs-on: ubuntu-latest
 
@@ -62,7 +62,6 @@ jobs:
 
       - name: Run Airtable sync
         id: run-airtable-sync
-        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.AIRSYNC_GITHUB_TOKEN }}
           AIRTABLE_TOKEN: ${{ secrets.AIRSYNC_AIRTABLE_TOKEN }}
@@ -100,7 +99,3 @@ jobs:
             });
 
             console.log(`Status updated: \n${JSON.stringify(response, null, 2)}`);
-
-            if (!syncSucceeded) {
-              throw new Error("Sync failed.");
-            }
