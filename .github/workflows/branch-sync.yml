@@ -36,8 +36,8 @@ jobs:
       - name: Run sync
         id: run-airtable-sync
         env:
-          GITHUB_TOKEN: ${{ secrets.AIRSYNC_GITHUB_TOKEN }}
-          AIRTABLE_TOKEN: ${{ secrets.AIRSYNC_AIRTABLE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_REPO_PAT }}
+          AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_SYNC_SANDBOX_PAT }}
         run: |
           mv config.json src/config.json
           cd src
