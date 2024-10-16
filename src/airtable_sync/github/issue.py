@@ -1,9 +1,18 @@
 from datetime import datetime
+from enum import Enum
 import re
 from python_graphql_client import GraphqlClient
 from ..custom_logger import CustomLogger
 
 logger = CustomLogger(__name__)
+
+
+class FieldType(Enum):
+    Text = "TEXT"
+    Number = "NUMBER"
+    Date = "DATE"
+    SingleSelect = "SINGLE_SELECT"
+    Iteration = "ITERATION"
 
 
 class GitHubIssue:
@@ -59,16 +68,17 @@ class GitHubIssue:
     def read(self, github_client: GraphqlClient = None):
         """ CRUD - Read from URL """
         if github_client.get_issue(self.issue_number):
-            logger.debug(f"Skipping issue {self.issue_number} as it already exists")
+            logger.debug(
+                f"Skipping issue {self.issue_number} as it already exists")
             return
-        
+
         if github_client and not self.github_client:
             self.github_client = github_client
         query = self.github_client.query
 
-        gqlquery = query.issue(issue_number=self.issue_number)
+        gql_query = query.issue(issue_number=self.issue_number)
         response = self.github_client.gql_client.execute(
-            query=gqlquery, headers=query.headers())
+            query=gql_query, headers=query.headers())
 
         if 'errors' in response:
             logger.error(f"Errors in response: {response}")
@@ -83,20 +93,29 @@ class GitHubIssue:
         for field_value in field_values:
             field = field_value.get('field', {})
             field_name = field.get('name')
+            field_type = None
             if not field_name:
                 continue
             if 'text' in field_value:
+                field_type = FieldType.Text
                 value = field_value['text']
             elif 'duration' in field_value and 'startDate' in field_value and 'title' in field_value:
+                field_type = FieldType.Iteration
                 value = f"{field_value['title']}({field_value['startDate']} - {field_value['duration']})"
+            elif 'number' in field_value:
+                field_type = FieldType.Number
+                value = field_value['number']
             elif 'date' in field_value:
+                field_type = FieldType.Date
                 value = field_value['date']
             elif 'name' in field_value:
+                field_type = FieldType.SingleSelect
                 value = field_value['name']
             else:
                 logger.warning(f"unknown field type: {field_value}")
                 value = None
-            self.add_field(field_name, value)
+
+            self._add_field(field_name, value, field_type)
 
     @staticmethod
     def _parse_date(date_str):
@@ -112,30 +131,30 @@ class GitHubIssue:
         return field_name.lower().replace(" ", "_").replace("-", "_")
 
     @staticmethod
-    def _map_field_value(field_name, value):
+    def _map_field_value(field_type, value):
         """Maps the field value to a standard value."""
-        if field_name in ["title", "airtable_link"]:
+        if field_type in [FieldType.Text, FieldType.Number, FieldType.SingleSelect]:
             return value
-        # todo - check data schema for field types
-        if "_date" in field_name:
+
+        if field_type == FieldType.Date:
             return GitHubIssue._parse_date(value)
+
+        # For single select field, ignore irrelevant text such as emojis for easier comparison
+        # e.g. "🚀 In progress" -> "In progress"
         # Remove non-alphanum chars and leading/trailing spaces
         if isinstance(value, str):
             value = re.sub(r'[^a-zA-Z0-9 ]', '', value).strip()
+
         return value
 
-    def add_field(self, field_name, value):
+    def _add_field(self, field_name, value, field_type):
         """ Add field to the issue """
         name = GitHubIssue._map_field_name(field_name)
         if name in ["title", "url"]:
             self.__dict__[name] = value
             return
-        value = GitHubIssue._map_field_value(name, value)
+        value = GitHubIssue._map_field_value(field_type, value)
         self.fields[name] = value
-
-    def update(self):
-        """ CRUD - Update fields"""
-        pass
 
     @property
     def issue_number(self):
