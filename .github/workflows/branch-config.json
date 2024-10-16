@@ -1,16 +1,15 @@
 {
     "airtable": {
-        "baseId": "appM1P3VYxuftmwub",
-        "tableId": "tblFxnqURZZEiTMkc",
-        "viewName": "uAds Ad Request"
+        "baseId": "app5c1A4u4zw1UbXN",
+        "tableId": "tblma0DImG8wj84Va"
     },
     "github": {
-        "owner": "Unity-Technologies",
-        "repo": "mz-ad-request-team",
-        "project": "Ad Request",
+        "owner": "zhongkairen",
+        "repo": "airtable-sync",
+        "project": "Airtable Sync",
         "fieldMap": {
-            "Start Date": "Engineering Start Date",
-            "Delivery Date": "Engineering Delivery Date"
+            "Start" : "Start Date",
+            "End": "Delivery Date"
         }
     }
 }

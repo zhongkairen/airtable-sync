@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 from urllib.parse import urlparse
 from pyairtable.api.types import RecordDict
@@ -8,49 +9,37 @@ logger = CustomLogger(__name__)
 
 class FieldConverter:
     """utility class for parsing and formatting date fields in a specific format.
-    todo - generalize type conversion based on field type in table schema
     """
 
-    def iso_date_parser(x): return datetime.strptime(x, "%Y-%m-%d")
-    def iso_date_formatter(x): return x.strftime("%Y-%m-%d")
-    """Parser used with values in response are handled"""
-    _field_parser = {
-        "Start Date": iso_date_parser,
-        "Delivery Date": iso_date_parser,
-        "Engineering Start Date": iso_date_parser,
-        "Engineering Delivery Date": iso_date_parser,
-    }
-    """Formatter used when passing values to request"""
-    _field_formatter = {
-        "Start Date": iso_date_formatter,
-        "Delivery Date": iso_date_formatter,
-        "Engineering Start Date": iso_date_formatter,
-        "Engineering Delivery Date": iso_date_formatter,
-    }
+    @staticmethod
+    def parse(value):
+        """
+        Parses the input value based on its type.
+        Args:
+            value: The input value to be parsed. It can be of type str, int, float, datetime, or any other type.
+        Returns:
+            The parsed value:
+            - If `value` is an iso date text, it returns a datetime object.
+            - Otherwise, it returns `value` as is.
+        """
+        if re.match(r"\d{4}-\d{2}-\d{2}", value):
+            return datetime.strptime(value, "%Y-%m-%d")
+        return value
 
-    def _generic_formatter(x):
+    @staticmethod
+    def format(value):
         """
         Formats the input value based on its type.
         Args:
-            x: The input value to be formatted. It can be of type str, int, float, datetime, or any other type.
+            value: The input value to be formatted. It can be of type str, int, float, datetime, or any other type.
         Returns:
             The formatted value:
-            - If `x` is a str, int, or float, it returns `x` as is.
-            - If `x` is a datetime object, it returns `x` formatted as a string in the "YYYY-MM-DD" format.
-            - For any other type, it returns the string representation of `x`.
+            - If `value` is a datetime object, it returns `value` formatted as a string in the "YYYY-MM-DD" format.
+            - Otherwise, it returns the string representation of `value`.
         """
-        return x if isinstance(x, (str, int, float)) else x.strftime(
-            "%Y-%m-%d") if isinstance(x, datetime) else str(x)
-
-    @staticmethod
-    def parse(field, value):
-        """Parse values from response to internal representation"""
-        return FieldConverter._field_parser.get(field, lambda x: x)(value)
-
-    @staticmethod
-    def format(field, value):
-        """Format values from internal representation to request"""
-        return FieldConverter._field_formatter.get(field, FieldConverter._generic_formatter)(value)
+        if isinstance(value, datetime):
+            return value.strftime("%Y-%m-%d")
+        return str(value)
 
 
 class AirtableRecord:
@@ -207,7 +196,7 @@ class AirtableRecord:
             - The method does not update the field value if it is the same as the current value.
         """
         current_value = self._record_dict.get("fields").get(field)
-        value = FieldConverter.format(field, value)
+        value = FieldConverter.format(value)
 
         if current_value == value:
             return
