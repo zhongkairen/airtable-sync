@@ -104,7 +104,7 @@ class GitHubIssue:
                 value = f"{field_value['title']}({field_value['startDate']} - {field_value['duration']})"
             elif 'number' in field_value:
                 field_type = FieldType.Number
-                value = field_value['number']
+                value = float(field_value['number'])
             elif 'date' in field_value:
                 field_type = FieldType.Date
                 value = field_value['date']
