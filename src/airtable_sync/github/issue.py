@@ -46,7 +46,7 @@ class GitHubIssue:
         for attr in self.__dict__:
             if attr in ['url', 'title', 'body', 'assignees', 'labels', 'state', 'closed']:
                 val = self.__dict__[attr]
-                if attr == 'assignees':
+                if attr == 'assignees' or attr == 'labels':
                     val = ', '.join(val)
                 elif attr == 'body':
                     val = (val.strip().splitlines()[

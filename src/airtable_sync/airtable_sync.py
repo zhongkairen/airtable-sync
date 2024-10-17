@@ -95,7 +95,7 @@ class AirtableSync:
         update_result = self.airtable.batch_update(update_dict_list)
 
         # Log the final sync result
-        self._log_sync_result(update_result)
+        self._log_sync_result(update_result, logger)
 
     def _prep_sync(self):
         # Verify the fields to be synced
@@ -113,7 +113,7 @@ class AirtableSync:
         """Retrieve the GitHub issue or create one from an Airtable record."""
         return self.github.fetch_issue(record.issue_number)
 
-    def _log_sync_result(self, sync_result: UpdateResult):
+    def _log_sync_result(self, sync_result: UpdateResult, logger):
         """Log the final sync result based on update counts."""
         if sync_result.error:
             logger.error(sync_result.error)
