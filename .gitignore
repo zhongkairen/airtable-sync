@@ -7,8 +7,11 @@
 .python-version
 .secrets
 .venv/
-.vscode/
 __pycache__/
+
+# IDE
+.vscode/*
+!.vscode/tasks.json
 
 # Ignore build and distribution directories
 build/
