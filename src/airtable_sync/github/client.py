@@ -15,10 +15,6 @@ class GitHubClient:
         self.epic_issues = []
 
     @property
-    def gql_client(self):
-        return self._client
-
-    @property
     def config(self):
         return self.github_config
 
@@ -73,6 +69,26 @@ class GitHubClient:
             f"Found {len(self.epic_issues)} epic issues out of {total_items} items")
         for issue in self.epic_issues:
             logger.debug(f"{issue.issue_number} - {issue.title}")
+
+    def fetch_issue(self, issue_number: int):
+        """Fetches the issue details from GitHub."""
+        issue = self.get_issue(issue_number)
+        if issue:
+            return issue
+
+        query = self.query.issue(issue_number)
+        response = self._client.execute(
+            query=query, headers=self.query.headers())
+        if 'errors' in response:
+            logger.error(f"Errors in response: {response}")
+            raise Exception(f"Error fetching items: {response['errors']}")
+
+        item = response['data']['repository']['issue']
+        fields = item.get('projectItems', {}).get('nodes')
+        first_issue_fields = (fields[0] if fields else {})
+        issue = GitHubIssue(url=item.get('url'))
+        issue.load_fields(item, first_issue_fields)
+        return issue
 
     def get_issue(self, issue_number: int):
         """Fetches the issue details from GitHub."""

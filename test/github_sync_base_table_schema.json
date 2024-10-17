@@ -1,0 +1,400 @@
+{
+    "id": "tblFxnqURZZEiTMkc",
+    "name": "Unity-Technologies/ad-delivery-campaign-targeting-team",
+    "primary_field_id": "flddEBtmM0N3t4mkz",
+    "description": null,
+    "fields": [
+        {
+            "type": "singleLineText",
+            "id": "flddEBtmM0N3t4mkz",
+            "name": "Title",
+            "description": null
+        },
+        {
+            "type": "number",
+            "options": {
+                "precision": 0
+            },
+            "id": "fldWtHvTCU1EFzir1",
+            "name": "Issue Number",
+            "description": null
+        },
+        {
+            "type": "singleSelect",
+            "options": {
+                "choices": [
+                    {
+                        "id": "selgdWC1BNw7QUkaU",
+                        "name": "open",
+                        "color": "blueLight2"
+                    },
+                    {
+                        "id": "selqvHeUlCMZlJG0R",
+                        "name": "closed",
+                        "color": "cyanLight2"
+                    }
+                ]
+            },
+            "id": "fldkfRFbArUPnpR1j",
+            "name": "State",
+            "description": null
+        },
+        {
+            "type": "button",
+            "id": "fldHONwbxeVZ7ZS7k",
+            "name": "Open in Github",
+            "description": null
+        },
+        {
+            "type": "multipleSelects",
+            "options": {
+                "choices": [
+                    {
+                        "id": "selese16yzRERiLIa",
+                        "name": "airtable",
+                        "color": "blueLight2"
+                    },
+                    {
+                        "id": "selxLpscGAPbX7ODb",
+                        "name": "enhancement",
+                        "color": "cyanLight2"
+                    },
+                    {
+                        "id": "selk7GVMSn6DODO5c",
+                        "name": "good first issue",
+                        "color": "tealLight2"
+                    },
+                    {
+                        "id": "sel9YU2Y5HFacE2Ho",
+                        "name": "tech refresh",
+                        "color": "cyanLight2"
+                    },
+                    {
+                        "id": "seldBosoyrVpRSVO7",
+                        "name": "+Performance",
+                        "color": "tealLight2"
+                    },
+                    {
+                        "id": "selFVmEBv5mIXxpI0",
+                        "name": "+Resiliency",
+                        "color": "greenLight2"
+                    },
+                    {
+                        "id": "selNKB2CPVTNwf6lX",
+                        "name": "+Cost Increase",
+                        "color": "yellowLight2"
+                    },
+                    {
+                        "id": "seleyLWjwQmtN8H2I",
+                        "name": "infrastructure",
+                        "color": "orangeLight2"
+                    },
+                    {
+                        "id": "selHcKN7AdLmfFSoA",
+                        "name": "+Infra Upgrade",
+                        "color": "redLight2"
+                    },
+                    {
+                        "id": "sel4eFCppKwTwVY6A",
+                        "name": "external",
+                        "color": "pinkLight2"
+                    },
+                    {
+                        "id": "selXl1db42BazvJFk",
+                        "name": "Airtable-uAds Ad Request",
+                        "color": "purpleLight2"
+                    },
+                    {
+                        "id": "selW5ONMc1inXbcSE",
+                        "name": "+Cost Reduction",
+                        "color": "grayLight2"
+                    }
+                ]
+            },
+            "id": "fldqVS8ofAGJCNtA4",
+            "name": "Labels",
+            "description": null
+        },
+        {
+            "type": "richText",
+            "id": "fldr0QcLldsuPotPr",
+            "name": "Body",
+            "description": null
+        },
+        {
+            "type": "dateTime",
+            "options": {
+                "time_zone": "client",
+                "date_format": {
+                    "format": "l",
+                    "name": "local"
+                },
+                "time_format": {
+                    "format": "h:mma",
+                    "name": "12hour"
+                }
+            },
+            "id": "fld0mgOLwRQB7om4z",
+            "name": "Created At",
+            "description": null
+        },
+        {
+            "type": "dateTime",
+            "options": {
+                "time_zone": "client",
+                "date_format": {
+                    "format": "l",
+                    "name": "local"
+                },
+                "time_format": {
+                    "format": "h:mma",
+                    "name": "12hour"
+                }
+            },
+            "id": "fldg9yhDW8BPQDpV0",
+            "name": "Updated At",
+            "description": null
+        },
+        {
+            "type": "dateTime",
+            "options": {
+                "time_zone": "client",
+                "date_format": {
+                    "format": "l",
+                    "name": "local"
+                },
+                "time_format": {
+                    "format": "h:mma",
+                    "name": "12hour"
+                }
+            },
+            "id": "fld0QYc3uVztgNTPi",
+            "name": "Closed At",
+            "description": null
+        },
+        {
+            "type": "singleLineText",
+            "id": "fldoKkR3e18cLZs7b",
+            "name": "Created By",
+            "description": null
+        },
+        {
+            "type": "singleLineText",
+            "id": "fldTo4cpJUTnwleLW",
+            "name": "Assignees",
+            "description": null
+        },
+        {
+            "type": "singleSelect",
+            "options": {
+                "choices": [
+                    {
+                        "id": "selPEw13HQnTKHwGK",
+                        "name": "CAR Deprecation M1",
+                        "color": "blueLight2"
+                    },
+                    {
+                        "id": "seluz20KLa5qWvBgz",
+                        "name": "Deployment with GitHub Actions",
+                        "color": "cyanLight2"
+                    }
+                ]
+            },
+            "id": "fldNZzYwODSCrM8MJ",
+            "name": "Milestone",
+            "description": null
+        },
+        {
+            "type": "number",
+            "options": {
+                "precision": 0
+            },
+            "id": "fldfWjdPCGXpH5se5",
+            "name": "Comment Count",
+            "description": null
+        },
+        {
+            "type": "url",
+            "id": "fldNWrfhWXPxjivBr",
+            "name": "Issue Link",
+            "description": null
+        },
+        {
+            "type": "singleLineText",
+            "id": "fldMxAvRH8T61dpYm",
+            "name": "Id",
+            "description": null
+        },
+        {
+            "type": "singleLineText",
+            "id": "fldokOUwdNw9uFkPW",
+            "name": "GitHub Repo",
+            "description": null
+        },
+        {
+            "type": "formula",
+            "options": {
+                "formula": "CONCATENATE({fldokOUwdNw9uFkPW}, '-', {fldWtHvTCU1EFzir1})",
+                "is_valid": true,
+                "referenced_field_ids": [
+                    "fldokOUwdNw9uFkPW",
+                    "fldWtHvTCU1EFzir1"
+                ],
+                "result": {
+                    "type": "singleLineText"
+                }
+            },
+            "id": "fldAe3WFIRqAJDJPI",
+            "name": "GitHub Repo & Issue ID",
+            "description": null
+        },
+        {
+            "type": "externalSyncSource",
+            "options": {
+                "choices": [
+                    {
+                        "id": "selHwB0gkGjK2yOOk",
+                        "name": "Unity-Technologies/ad-delivery-campaign-targeting-team",
+                        "color": "yellowLight2"
+                    },
+                    {
+                        "id": "selSOfU3TH2AKdGlc",
+                        "name": "Unity-Technologies/mz-ad-request-team",
+                        "color": "yellowDark1"
+                    }
+                ]
+            },
+            "id": "fldoD2wy5Sov0l0Ls",
+            "name": "Sync Source",
+            "description": null
+        },
+        {
+            "type": "date",
+            "options": {
+                "date_format": {
+                    "format": "YYYY-MM-DD",
+                    "name": "iso"
+                }
+            },
+            "id": "fldnuqmAGl6jzxV7o",
+            "name": "Engineering Start Date",
+            "description": null
+        },
+        {
+            "type": "date",
+            "options": {
+                "date_format": {
+                    "format": "YYYY-MM-DD",
+                    "name": "iso"
+                }
+            },
+            "id": "fldA1h6ZrOmRVafV5",
+            "name": "Engineering Delivery Date",
+            "description": null
+        },
+        {
+            "type": "singleLineText",
+            "id": "fldesMDH81azLAdAz",
+            "name": "GitHub Project",
+            "description": null
+        },
+        {
+            "type": "singleLineText",
+            "id": "fldwdckAc8XXrPb6m",
+            "name": "GitHub Issue Type",
+            "description": null
+        },
+        {
+            "type": "checkbox",
+            "options": {
+                "color": "greenBright",
+                "icon": "check"
+            },
+            "id": "fldpqRyzEoYcq5w5p",
+            "name": "Locked",
+            "description": null
+        }
+    ],
+    "views": [
+        {
+            "id": "viwbO8EVbM01ZxdeP",
+            "type": "grid",
+            "name": "Grid view",
+            "personal_for_user_id": null,
+            "visible_field_ids": [
+                "flddEBtmM0N3t4mkz",
+                "fldWtHvTCU1EFzir1",
+                "fldkfRFbArUPnpR1j",
+                "fldHONwbxeVZ7ZS7k",
+                "fldqVS8ofAGJCNtA4",
+                "fldr0QcLldsuPotPr",
+                "fld0mgOLwRQB7om4z",
+                "fldg9yhDW8BPQDpV0",
+                "fld0QYc3uVztgNTPi",
+                "fldoKkR3e18cLZs7b",
+                "fldTo4cpJUTnwleLW",
+                "fldNZzYwODSCrM8MJ",
+                "fldfWjdPCGXpH5se5",
+                "fldNWrfhWXPxjivBr",
+                "fldMxAvRH8T61dpYm",
+                "fldokOUwdNw9uFkPW",
+                "fldAe3WFIRqAJDJPI",
+                "fldoD2wy5Sov0l0Ls",
+                "fldnuqmAGl6jzxV7o",
+                "fldA1h6ZrOmRVafV5",
+                "fldesMDH81azLAdAz",
+                "fldwdckAc8XXrPb6m"
+            ]
+        },
+        {
+            "id": "viwPLq6ccrjuMUdD1",
+            "type": "grid",
+            "name": "Shared view",
+            "personal_for_user_id": null,
+            "visible_field_ids": [
+                "flddEBtmM0N3t4mkz",
+                "fldWtHvTCU1EFzir1",
+                "fldokOUwdNw9uFkPW",
+                "fldAe3WFIRqAJDJPI",
+                "fldkfRFbArUPnpR1j",
+                "fldHONwbxeVZ7ZS7k",
+                "fldqVS8ofAGJCNtA4",
+                "fldr0QcLldsuPotPr",
+                "fld0mgOLwRQB7om4z",
+                "fldg9yhDW8BPQDpV0",
+                "fld0QYc3uVztgNTPi",
+                "fldoKkR3e18cLZs7b",
+                "fldTo4cpJUTnwleLW",
+                "fldpqRyzEoYcq5w5p",
+                "fldNZzYwODSCrM8MJ",
+                "fldfWjdPCGXpH5se5",
+                "fldNWrfhWXPxjivBr",
+                "fldMxAvRH8T61dpYm"
+            ]
+        },
+        {
+            "id": "viwpn0LbLcBqtOdoB",
+            "type": "grid",
+            "name": "uAds Ad Request",
+            "personal_for_user_id": null,
+            "visible_field_ids": [
+                "flddEBtmM0N3t4mkz",
+                "fldWtHvTCU1EFzir1",
+                "fldkfRFbArUPnpR1j",
+                "fldnuqmAGl6jzxV7o",
+                "fldA1h6ZrOmRVafV5",
+                "fldHONwbxeVZ7ZS7k",
+                "fldqVS8ofAGJCNtA4",
+                "fldr0QcLldsuPotPr",
+                "fld0mgOLwRQB7om4z",
+                "fldg9yhDW8BPQDpV0",
+                "fld0QYc3uVztgNTPi",
+                "fldoKkR3e18cLZs7b",
+                "fldTo4cpJUTnwleLW",
+                "fldfWjdPCGXpH5se5",
+                "fldMxAvRH8T61dpYm",
+                "fldoD2wy5Sov0l0Ls"
+            ]
+        }
+    ]
+}

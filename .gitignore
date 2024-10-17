@@ -7,8 +7,11 @@
 .python-version
 .secrets
 .venv/
-.vscode/
 __pycache__/
+
+# IDE
+.vscode/*
+!.vscode/tasks.json
 
 # Ignore build and distribution directories
 build/
@@ -23,3 +26,6 @@ config.json
 # Ignore Python test artifacts
 .tox/
 tox.ini
+
+# Ignore test coverage reports
+.coverage/

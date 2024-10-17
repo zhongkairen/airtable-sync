@@ -1,0 +1,130 @@
+name: Test Coverage
+
+on:
+  workflow_dispatch: # Enables manual trigger
+
+  push:
+    branches:
+      - feature/*
+      - main
+
+jobs:
+  test_coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Set up Python
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'  # You can adjust this version as needed
+
+    # Install dependencies
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install coverage
+
+    # Run tests and collect coverage
+    - name: Run coverage
+      run: |
+        mkdir -p .coverage
+        echo "Running tests and collecting coverage..."
+        coverage run -m unittest discover -s test -v | tee .coverage/test_results.txt
+        echo "Generating coverage report..."
+        coverage report -m > .coverage/report.txt
+        echo "Coverage report generated."
+        coverage json -o .coverage/coverage.json
+
+    # Generate a JSON report of coverage
+    - name: Generate coverage JSON report
+      id: generate_coverage_json
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const output = fs.readFileSync('.coverage/coverage.json', 'utf8');
+          const coverageData = JSON.parse(output);
+          fs.writeFileSync('.coverage/coverage.json', JSON.stringify(coverageData, null, 2));
+
+          const { totals } = coverageData;
+          const summary = JSON.stringify(totals, null, 2);
+          console.log(`Coverage summary: ${summary}`);
+          fs.writeFileSync('.coverage/coverage_summary.json', summary);
+          return coverageData;
+
+    # Upload coverage reports and JSON artifacts
+    - name: Upload coverage artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-artifacts
+        path: |
+          .coverage/test_results.txt
+          .coverage/report.txt
+          .coverage/coverage.json
+          .coverage/coverage_summary.json
+
+    - name: Update status badge
+      if: github.ref == 'refs/heads/main' # Run only for the main branch
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.AIRSYNC_GIST_TOKEN }}
+        script: |
+          const gistId = '26163c99522a7bff93750c3a1a13d879';
+          const summaryGistFileName = 'airtable-sync.coverage.summary.json';
+          const badgeGistFileName = 'airtable-sync.coverage.badge.json';
+          const coverageData = ${{ steps.generate_coverage_json.outputs.result }};
+
+          // Read from existing Gist
+          const summaryGist = await github.rest.gists.get({ gist_id: gistId });
+          const { timestamp: existingTimestamp } = summaryGist.data;
+          const { timestamp } = coverageData.meta;
+          const { totals: summary } = coverageData;
+          // "timestamp": "2024-10-12T12:51:20.862683"
+          const newTime = new Date(timestamp);
+          const oldTime = new Date(existingTimestamp);
+          if (oldTime >= newTime) {
+            console.log('No need to update status badge');
+            return;
+          }
+
+          // Update summary gist
+          const summaryJson = {
+            "timestamp": timestamp,
+            "summary": summary
+          };
+          const summaryPayload = JSON.stringify(summaryJson, null, 2);
+
+          // Update status badge gist
+          const badgeJson = {
+            "schemaVersion": 1,
+            "label": "coverage",
+            "message": `${summary.percent_covered_display}%`
+          };
+
+          const badgePayload = JSON.stringify(badgeJson, null, 2);
+          console.log(`summaryPayload: ${summaryPayload}\n badgePayload: ${badgePayload}`);
+
+          const updatedContent = {
+            files: {
+              [summaryGistFileName]: {
+                content: summaryPayload
+              },
+              [badgeGistFileName]: {
+                content: badgePayload
+              }
+            }
+          };
+
+          const response = await github.rest.gists.update({
+            gist_id: gistId,
+            ...updatedContent
+          });
+          console.log(`Updated Gist: ${response.data.html_url}`);
+          console.log(`  files: ${JSON.stringify(response.data.files, null, 2)}`);
+

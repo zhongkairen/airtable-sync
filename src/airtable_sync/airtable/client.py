@@ -1,4 +1,5 @@
 from pyairtable import Api
+from pyairtable.models.schema import FieldSchema, TableSchema
 from .config import AirtableConfig
 from .update_result import UpdateResult
 from ..custom_logger import CustomLogger
@@ -17,18 +18,22 @@ class AirtableClient:
         self._table_schema = None
 
     @property
-    def table_schema(self) -> dict:
+    def table_schema(self) -> TableSchema:
         if not self._table_schema:
             self._table_schema = self.table.schema()
         return self._table_schema
 
     @property
     def table_fields_schema(self) -> dict:
-        return {field.name: field.type for field in self.table_schema.fields}
+        return {field_schema.name: field_schema.type for field_schema in self._schema_fields}
+    
+    @property
+    def _schema_fields(self) -> list[FieldSchema]:
+        return self.table_schema.fields
 
     def field_in_schema(self, field_name) -> bool:
         """Check if a field is in the Airtable schema"""
-        return any(field.name == field_name for field in self.table_schema.fields)
+        return any(field_schema.name == field_name for field_schema in self._schema_fields)
 
     def read_records(self):
         """

@@ -18,7 +18,6 @@ class FieldType(Enum):
 class GitHubIssue:
     def __init__(self, url: str):
         self.url = url
-        self.github_client = None
         self.fields = {}
 
     def load_fields(self, base_data, fields):
@@ -64,30 +63,6 @@ class GitHubIssue:
     @property
     def is_epic(self):
         return self.fields.get('issue_type') == 'Epic'
-
-    def read(self, github_client: GraphqlClient = None):
-        """ CRUD - Read from URL """
-        if github_client.get_issue(self.issue_number):
-            logger.debug(
-                f"Skipping issue {self.issue_number} as it already exists")
-            return
-
-        if github_client and not self.github_client:
-            self.github_client = github_client
-        query = self.github_client.query
-
-        gql_query = query.issue(issue_number=self.issue_number)
-        response = self.github_client.gql_client.execute(
-            query=gql_query, headers=query.headers())
-
-        if 'errors' in response:
-            logger.error(f"Errors in response: {response}")
-            raise Exception(f"Error fetching items: {response['errors']}")
-
-        item = response['data']['repository']['issue']
-        fields = item.get('projectItems', {}).get('nodes')
-        first_issue_fields = (fields[0] if fields else {})
-        self.load_fields(item, first_issue_fields)
 
     def handle_field_values(self, field_values):
         for field_value in field_values:
