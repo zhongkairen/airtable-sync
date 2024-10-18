@@ -62,6 +62,11 @@ class GitHubIssue:
 
     @property
     def is_epic(self):
+        # Ignore irrelevant text such as emojis for easier comparison
+        # remove non-alphanum chars and leading/trailing spaces
+        # e.g. "🚀 Epic" -> "Epic"
+        issue_type = self.fields.get('issue_type', '')
+        issue_type = re.sub(r'[^a-zA-Z0-9 ]', '', issue_type).strip()
         return self.fields.get('issue_type') == 'Epic'
 
     def handle_field_values(self, field_values):
@@ -108,17 +113,8 @@ class GitHubIssue:
     @staticmethod
     def _map_field_value(field_type, value):
         """Maps the field value to a standard value."""
-        if field_type in [FieldType.Text, FieldType.Number, FieldType.SingleSelect]:
-            return value
-
         if field_type == FieldType.Date:
             return GitHubIssue._parse_date(value)
-
-        # For single select field, ignore irrelevant text such as emojis for easier comparison
-        # e.g. "🚀 In progress" -> "In progress"
-        # Remove non-alphanum chars and leading/trailing spaces
-        if isinstance(value, str):
-            value = re.sub(r'[^a-zA-Z0-9 ]', '', value).strip()
 
         return value
 
