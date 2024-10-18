@@ -87,6 +87,24 @@ class TestGitHubIssue(unittest.TestCase):
     def test_issue_number(self):
         self.assertEqual(self.issue.issue_number, 1)
 
+    def test_parse_date(self):
+        self.assertEqual(self.issue._parse_date('2023-10-01'),
+                         datetime(2023, 10, 1))
+
+        self.assertIsNone(self.issue._parse_date('2023-10.01'))
+
+    def test_map_field_value(self):
+        self.assertEqual(self.issue._map_field_value(
+            FieldType.Text, 'value'), 'value')
+        self.assertEqual(self.issue._map_field_value(
+            FieldType.Number, 5), 5)
+        self.assertEqual(self.issue._map_field_value(
+            FieldType.Date, '2023-10-01'), datetime(2023, 10, 1))
+        self.assertEqual(self.issue._map_field_value(
+            FieldType.SingleSelect, 'value'), 'value')
+        self.assertEqual(self.issue._map_field_value(
+            FieldType.Iteration, 'value'), 'value')
+
 
 if __name__ == '__main__':
     unittest.main()
