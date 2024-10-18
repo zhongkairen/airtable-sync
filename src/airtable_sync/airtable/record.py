@@ -152,10 +152,10 @@ class AirtableRecord:
             tuple: A tuple containing a boolean indicating if the schema is valid,
                    and an optional error message if the schema is invalid.
         """
-        valid = all(
-            key in schema.keys() for key in AirtableRecord._required_fields)
-
-        error = None if valid else f"Required fields {AirtableRecord._required_fields} are not found in schema: {schema.keys()}"
+        missing_fields = [
+            field for field in AirtableRecord._required_fields if field not in schema]
+        valid = len(missing_fields) == 0
+        error = None if valid else f"Required fields {missing_fields} are not found in schema: {list(schema.keys())}"
         return valid, error
 
     def __str__(self):
