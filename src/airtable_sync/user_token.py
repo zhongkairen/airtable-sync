@@ -17,8 +17,8 @@ class UserToken:
             EnvironmentError: If neither the token path nor the token is set in the environment.
         """
         token, token_path = names.get('token'), names.get('token_path')
-        self.token = os.environ.get(token)
-        self.token_path = os.environ.get(token_path)
+        self.token = os.environ.get(token) if token else None
+        self.token_path = os.environ.get(token_path) if token_path else None
 
         if not self.token_path and not self.token:
             config_token, config_token_path = names.get('config_token'), names.get('config_token_path')
@@ -31,10 +31,5 @@ class UserToken:
     def read(self):
         if self.token:
             return self.token
-        try:
-            with open(os.path.expanduser(self.token_path), 'r') as file:
-                return file.read().strip()  # Strip to remove any leading/trailing whitespace
-        except FileNotFoundError:
-            raise FileNotFoundError(f"The token file '{self.token_path}' was not found.")
-        except IOError as e:
-            raise IOError(f"Error reading token from '{self.token_path}': {e}")
+        with open(os.path.expanduser(self.token_path), 'r') as file:
+            return file.read().strip()  # Strip to remove any leading/trailing whitespace
