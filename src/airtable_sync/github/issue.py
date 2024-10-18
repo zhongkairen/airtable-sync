@@ -35,12 +35,9 @@ class GitHubIssue:
 
     def __str__(self):
         body = self.body
-        if body:
-            body = body.strip().splitlines()[
-                0] if body.strip() else "N/A"
-        else:
-            body = ""
-
+        body = (body if body else "").strip()
+        body = body.splitlines()[0] if body else ""
+        body = body[:50] if body else ""
         lines = []
 
         for attr in self.__dict__:
@@ -49,8 +46,7 @@ class GitHubIssue:
                 if attr == 'assignees' or attr == 'labels':
                     val = ', '.join(val)
                 elif attr == 'body':
-                    val = (val.strip().splitlines()[
-                           0] if val and val.strip() else "N/A")[:50]
+                    val = body
 
                 lines.append(f"{attr}: {val}")
 
