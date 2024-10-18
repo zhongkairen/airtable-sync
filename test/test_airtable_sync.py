@@ -47,8 +47,9 @@ class TestAirtableSync(unittest.TestCase):
         self.sync.airtable.field_in_schema = MagicMock(return_value=True)
         self.assertTrue(self.sync._verify_sync_fields())
 
-    def test_verify_record_field(self):
-        AirtableRecord.validate_schema = MagicMock(return_value=(True, None))
+    @patch('src.airtable_sync.airtable_sync.AirtableRecord.validate_schema')
+    def test_verify_record_field(self, mock_validate_schema):
+        mock_validate_schema.return_value = (True, None)
         self.assertTrue(self.sync._verify_record_field())
 
     def test_sync(self):
