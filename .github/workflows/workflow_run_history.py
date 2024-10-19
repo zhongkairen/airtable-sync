@@ -9,9 +9,6 @@ import asyncio
 import argparse
 from tqdm import tqdm  # requires `pip install tqdm`
 
-# GITHUB_AIRTABLE_SYNC_READONLY_ACTION_TOKEN = 'some-token'
-# GITHUB_AIRTABLE_SYNC_READONLY_ACTION_TOKEN_PATH = '~/.ssh/github.airtable-sync.read-only.actions.pat'
-# export GITHUB_AIRTABLE_SYNC_READONLY_ACTION_TOKEN_PATH=~/.ssh/github.airtable-sync.read-only.actions.pat
 def parse_args():
     parser = argparse.ArgumentParser(description='Fetch GitHub workflow run history.')
     parser.add_argument('--owner', required=True, help='GitHub repository owner')
@@ -23,9 +20,6 @@ args = parse_args()
 OWNER = args.owner
 REPO = args.repo
 WORKFLOW_ID = args.id
-# OWNER = 'zhongkairen'
-# REPO = 'airtable-sync'
-# WORKFLOW_ID = '122549153'
 
 
 class WorkflowRunHistory:
@@ -65,7 +59,7 @@ class WorkflowRunHistory:
                 run.get('run_number'))]
 
             if len(runs) == 0:
-                print("No new runs to process, first run_number" + self._csv.history[0].run_number)
+                print(f"No new runs to process, first run_number: {self._csv.history[0].run_number}")
                 return self._csv
 
             progress_bar = tqdm(
@@ -165,9 +159,7 @@ class WorkflowRunHistory:
 
         csv = CsvFile(gist_id, file_name, self.gist_token)
         csv.read()
-        # print(f"Existing history: \n{csv}")
         self._csv = csv
-        # print(f"Existing history: \n{self._run_numbers}")
 
 
 class HistoryItem:
@@ -190,7 +182,7 @@ class HistoryItem:
 
 class CsvFile:
     def __init__(self, gist_id, file_name, token):
-        self.gist_id = gist_id  # "584db1c30251ffee502796950b03f782"
+        self.gist_id = gist_id
         self.file_name = file_name
         self.token = token
         self._history = []
