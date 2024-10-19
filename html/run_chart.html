@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Workflow Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="default.css">
+</head>
+
+<body>
+    <canvas id="myChart" width="800" height="400"></canvas>
+
+    <div class="pagination">
+        <button id="prevBtn" disabled>Previous</button>
+        <button id="nextBtn">Next</button>
+    </div>
+
+    <script>
+        const cacheBuster = Math.random().toString(36).slice(2);
+        const url = `https://gist.githubusercontent.com/zhongkairen/584db1c30251ffee502796950b03f782/raw/run_history.csv?${cacheBuster}`;
+        let arrays = {};
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                parseData(data);
+                // Update the chart with the fetched data
+                updateChart(currentPage);
+            })
+            .catch(error => console.error('Error fetching data:', error));
+
+        const rawData = '2024-10-18T21:43:46Z,46,workflow_dispatch,success,31s,v0.2.0';
+
+        // Function to parse the data
+        function parseData(raw) {
+            const lines = raw.trim().split('\n');
+            const timestamps = [];
+            const durations = [];
+            const versions = [];
+            const colors = [];
+            const warnings = [];
+            const types = [];
+
+            lines.forEach(line => {
+                const parts = line.trim().split(',');
+                const timestamp = parts[0];
+                const datetime = new Date(timestamp);
+
+                const timeStr = datetime.toLocaleString('en-US', {
+                    timeZone: 'Europe/Helsinki',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                    timeZoneName: 'short',
+                });
+                timestamps.push(timeStr);
+                durations.push(parseFloat(parts[4]) || 0); // Convert duration to a number
+                versions.push(parts[5]); // Collect versions
+                types.push(parts[2]);
+
+                // Determine color and warning based on run type and status
+                const runType = parts[2];
+                const status = parts[3];
+
+                if (status !== 'success') {
+                    colors.push('rgba(255, 99, 132, 0.5)'); // Red for failed runs
+                } else if (runType === 'manual') {
+                    colors.push('rgba(255, 206, 86, 0.5)'); // Yellow for manual runs
+                } else {
+                    colors.push('rgba(75, 192, 192, 0.5)'); // Teal for successful scheduled runs
+                }
+
+                // Add warning if status is not success
+                if (status !== 'success') {
+                    warnings.push('⚠️' + status);
+                } else {
+                    warnings.push(''); // No warning
+                }
+            });
+
+            arrays = { timestamps, durations, versions, colors, warnings, types };
+        }
+
+        // Parse the data
+        parseData(rawData);
+
+        // Pagination variables
+        let currentPage = 0;
+        const itemsPerPage = 24; // Number of items to display per page
+        
+        function updateChart(page) {
+            const totalItems = arrays.timestamps.length;
+            const start = page * itemsPerPage;
+            const end = start + itemsPerPage;
+
+            // Update the chart data
+            myChart.data.labels = arrays.timestamps.slice(start, end);
+            myChart.data.datasets[0].data = arrays.durations.slice(start, end);
+            myChart.update();
+
+            // Update button states
+            document.getElementById('prevBtn').disabled = page === 0;
+            document.getElementById('nextBtn').disabled = end >= totalItems;
+        }
+
+        // Create the chart
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar', // Change this to 'line' or 'bar' as needed
+            data: {
+                labels: [], // Initially empty; will be filled on chart update
+                datasets: [{
+                    label: 'Duration (seconds)',
+                    data: [],
+                    backgroundColor: arrays.colors,
+                    borderColor: arrays.colors.map(color => color.replace(/0\.5/, '1')), // Full opacity for borders
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    hoverBorderColor: 'rgba(255, 206, 86, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                const index = tooltipItem.dataIndex;
+                                return [`Duration: ${tooltipItem.raw} seconds`, warnings[index]];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Initial chart update
+        updateChart(currentPage);
+
+        // Pagination button event listeners
+        document.getElementById('prevBtn').addEventListener('click', function () {
+            if (currentPage > 0) {
+                currentPage--;
+                updateChart(currentPage);
+            }
+        });
+
+        document.getElementById('nextBtn').addEventListener('click', function () {
+            if ((currentPage + 1) * itemsPerPage < arrays.timestamps.length) {
+                currentPage++;
+                updateChart(currentPage);
+            }
+        });
+    </script>
+</body>
+
+</html>
