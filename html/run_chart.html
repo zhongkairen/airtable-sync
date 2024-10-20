@@ -182,6 +182,17 @@
                 updateChart(currentCursor);
             }
         });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'ArrowLeft') {
+                // Simulate clicking the Previous button
+                document.getElementById('prevBtn').click();
+            } else if (event.key === 'ArrowRight') {
+                // Simulate clicking the Next button
+                document.getElementById('nextBtn').click();
+            }
+        });
     </script>
 </body>
 
