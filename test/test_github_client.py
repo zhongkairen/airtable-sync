@@ -1,10 +1,8 @@
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 from src.airtable_sync.github.client import GitHubClient
 from src.airtable_sync.github.config import GitHubConfig
-from src.airtable_sync.github.graphqlquery import GraphQLQuery
 from src.airtable_sync.github.issue import GitHubIssue
-from src.airtable_sync.custom_logger import CustomLogger
 
 
 class TestGitHubClient(unittest.TestCase):
@@ -100,17 +98,18 @@ class TestGitHubClient(unittest.TestCase):
         self.assertEqual(found_issue, issue)
 
     def test_handle_issues_data(self):
-        def make_issue(issue_number, is_epic): return {
-            'content': {
-                'url': f'https://github.com/test/repo/issues/{issue_number}',
-            },
-            'fieldValues': {
-                'nodes': [
-                    {'field': {'name': 'Issue Type'}, 'text': (
-                        'Epic' if is_epic else 'Task')}
-                ]
+        def make_issue(issue_number, is_epic):
+            return {
+                'content': {
+                    'url': f'https://github.com/test/repo/issues/{issue_number}',
+                },
+                'fieldValues': {
+                    'nodes': [
+                        {'field': {'name': 'Issue Type'}, 'text': (
+                            'Epic' if is_epic else 'Task')}
+                    ]
+                }
             }
-        }
 
         items = [
             make_issue(1, False),

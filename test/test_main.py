@@ -1,8 +1,6 @@
 import unittest
 from unittest.mock import patch, mock_open, MagicMock
 import argparse
-import os
-import json
 from src.airtable_sync.main import parse_arguments, get_config_file_path, main
 
 
