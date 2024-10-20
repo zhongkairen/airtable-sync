@@ -1,4 +1,3 @@
-from datetime import datetime
 from .github.config import GitHubConfig
 from .github.client import GitHubClient
 from .github.issue import GitHubIssue
@@ -56,8 +55,9 @@ class AirtableSync:
                 missing_fields.append(field_name)
 
         if missing_fields:
-            def stringify(x): return ", ".join(
-                [f'"{item}"' for item in x]) if isinstance(x, list) else ""
+            def stringify(x):
+                return ", ".join(
+                    [f'"{item}"' for item in x]) if isinstance(x, list) else ""
             logger.error(
                 f"Unknown field(s): {stringify(missing_fields)} not found in Airtable table schema: {stringify(list(self.airtable.table_fields_schema.keys()))}.")
         return len(missing_fields) == 0
@@ -67,7 +67,7 @@ class AirtableSync:
         Verifies the record field against the Airtable table fields schema.
         This method checks if the mandatory record fields are included in the table schema.
         Returns:
-            tuple: A tuple containing a boolean indicating if the validation was 
+            tuple: A tuple containing a boolean indicating if the validation was
             successful and an error message if it was not.
         """
         valid, error = AirtableRecord.validate_schema(

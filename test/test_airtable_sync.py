@@ -1,11 +1,9 @@
 import unittest
 from unittest.mock import MagicMock, patch
-from datetime import datetime
 from src.airtable_sync.airtable_sync import AirtableSync
 from src.airtable_sync.github.config import GitHubConfig
 from src.airtable_sync.airtable.config import AirtableConfig
 from src.airtable_sync.airtable.record import AirtableRecord
-from src.airtable_sync.airtable.update_result import UpdateResult
 from src.airtable_sync.github.issue import GitHubIssue
 
 

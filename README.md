@@ -1,4 +1,5 @@
 [![Unit Tests Status](https://github.com/zhongkairen/airtable-sync/actions/workflows/run-unit-tests.yml/badge.svg)](https://github.com/zhongkairen/airtable-sync/actions/workflows/run-unit-tests.yml)
+[![flake8 lint](https://github.com/zhongkairen/airtable-sync/actions/workflows/flake8-lint.yml/badge.svg)](https://github.com/zhongkairen/airtable-sync/actions/workflows/flake8-lint.yml)
 [![](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/zhongkairen/26163c99522a7bff93750c3a1a13d879/raw/airtable-sync.coverage.badge.json)]()
 [![](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/zhongkairen/26502e2a8b93eedb9cd15229cdee4c59/raw/airtable-sync.status.json?cache=sdfs1)](https://github.com/zhongkairen/airtable-sync/actions/workflows/airtable-sync.yml)
 
@@ -48,7 +49,7 @@ todo: add scopes
 ❗Make sure you copy the PAT immediately when prompted, the key won't re-appear after the prompt is dismissed.\
 Create a pat file by pasting into the terminal:
 ```bash
-echo "ghp_38m03<replace with your own token>" > ~/.ssh/gh.read.repo.project.user.pat 
+echo "ghp_38m03<replace with your own token>" > ~/.ssh/gh.read.repo.project.user.pat
 ```
 Set the proper file permission.
 ```bash
@@ -69,7 +70,7 @@ See the following sections for details on which settings to change.
 Create environment variables
 ```bash
 export GITHUB_TOKEN_PATH=/path/to/your/airtable.records_wr.schema_base_r.github_sync_base.pat
-export AIRTABLE_TOKEN_PATH=/path/to/your/gh.read.repo.project.user.pat 
+export AIRTABLE_TOKEN_PATH=/path/to/your/gh.read.repo.project.user.pat
 ```
 Replace with proper file names if you in the earlier step with different names.
 

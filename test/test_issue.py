@@ -115,7 +115,8 @@ class TestGitHubIssue(unittest.TestCase):
             {'field': {'name': 'Estimate'}, 'number': 5},
             {'field': {'name': 'Due Date'}, 'date': '2023-10-01'},
             {'field': {'name': 'Issue type'}, 'name': 'Epic'},
-            {'field': {'name': 'Stroll'}, 'title': 'w32', 'startDate': '2023-10-01', 'duration': '2 weeks'},
+            {'field': {'name': 'Stroll'}, 'title': 'w32',
+                'startDate': '2023-10-01', 'duration': '2 weeks'},
             {'field': {'name': 'Unknown'}, 'temp': 1},
             {'field': {'alias': 'Tower'}, 'text': 'High'},
         ]
@@ -125,7 +126,8 @@ class TestGitHubIssue(unittest.TestCase):
         self.assertEqual(self.issue.fields['due_date'], datetime.strptime(
             '2023-10-01', '%Y-%m-%d'))
         self.assertEqual(self.issue.fields['issue_type'], 'Epic')
-        self.assertEqual(self.issue.fields['stroll'], 'w32(2023-10-01 - 2 weeks)')
+        self.assertEqual(
+            self.issue.fields['stroll'], 'w32(2023-10-01 - 2 weeks)')
         self.assertIsNone(self.issue.fields['unknown'])
         self.assertIsNone(self.issue.fields.get('tower'))
 
@@ -148,6 +150,7 @@ class TestGitHubIssue(unittest.TestCase):
 
         self.issue._add_field('url', 'http://', FieldType.Text)
         self.assertEqual(self.issue.url, 'http://')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,7 +1,6 @@
 from datetime import datetime
 from enum import Enum
 import re
-from python_graphql_client import GraphqlClient
 from ..custom_logger import CustomLogger
 
 logger = CustomLogger(__name__)

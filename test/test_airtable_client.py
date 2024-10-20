@@ -37,7 +37,7 @@ class TestAirtableClient(unittest.TestCase):
         mock_field_schema = MagicMock()
         mock_field_schema.name = 'Field1'
         mock_field_schema.type = 'text'
-        
+
         mock_schema = MagicMock()
         mock_schema.fields = [mock_field_schema]
         self.client.table.schema.return_value = mock_schema
@@ -51,10 +51,10 @@ class TestAirtableClient(unittest.TestCase):
         mock_field_schema = MagicMock()
         mock_field_schema.name = 'Field1'
         mock_field_schema.type = 'text'
-        
+
         mock_schema = MagicMock()
         mock_schema.fields = [mock_field_schema]
-        
+
         self.client.table.schema.return_value = mock_schema
         self.assertTrue(self.client.field_in_schema('Field1'))
         self.assertFalse(self.client.field_in_schema('Field2'))
@@ -68,6 +68,7 @@ class TestAirtableClient(unittest.TestCase):
             script_dir, 'github_sync_base_table_schema.json')
         with open(json_file, 'r') as f:
             schema = json.load(f)
+
             def dict_to_mock(d):
                 if isinstance(d, dict):
                     mock_obj = MagicMock()

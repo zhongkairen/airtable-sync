@@ -1,8 +1,5 @@
 import unittest
-from datetime import datetime
-from urllib.parse import urlparse
-from src.airtable_sync.airtable.record import AirtableRecord, FieldConverter
-from pyairtable.api.types import RecordDict
+from src.airtable_sync.airtable.record import AirtableRecord
 
 
 class TestAirtableRecord(unittest.TestCase):
