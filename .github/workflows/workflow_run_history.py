@@ -9,12 +9,16 @@ import asyncio
 import argparse
 from tqdm import tqdm  # requires `pip install tqdm`
 
+
 def parse_args():
-    parser = argparse.ArgumentParser(description='Fetch GitHub workflow run history.')
-    parser.add_argument('--owner', required=True, help='GitHub repository owner')
+    parser = argparse.ArgumentParser(
+        description='Fetch GitHub workflow run history.')
+    parser.add_argument('--owner', required=True,
+                        help='GitHub repository owner')
     parser.add_argument('--repo', required=True, help='GitHub repository name')
     parser.add_argument('--id', required=True, help='GitHub workflow ID')
     return parser.parse_args()
+
 
 args = parse_args()
 OWNER = args.owner
@@ -59,7 +63,8 @@ class WorkflowRunHistory:
                 run.get('run_number'))]
 
             if len(runs) == 0:
-                print(f"No new runs to process, first run_number: {self._csv.history[0].run_number}")
+                print(
+                    f"No new runs to process, first run_number: {self._csv.history[0].run_number}")
                 return self._csv
 
             progress_bar = tqdm(
