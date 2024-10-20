@@ -58,6 +58,58 @@
         "panel": "shared"
       },
       "problemMatcher": []
-    }
+    },
+    {
+      "label": "flake8 src",
+      "type": "shell",
+      "command": "flake8",
+      "args": [
+        "src",
+        "--max-line-length=100",
+        "--ignore=E501,W503"
+      ],
+      "group": "build",
+      "problemMatcher": [
+        {
+          "owner": "python",
+          "fileLocation": "relative",
+          "pattern": [
+            {
+              "regexp": "^(.+):(\\d+):(\\d+): (.+)$",
+              "file": 1,
+              "line": 2,
+              "column": 3,
+              "message": 4
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "flake8 tests",
+      "type": "shell",
+      "command": "flake8",
+      "args": [
+        "test",
+        "--max-line-length=100",
+        "--ignore=E501,W503"
+      ],
+      "group": "build",
+      "problemMatcher": [
+        {
+          "owner": "python",
+          "fileLocation": "relative",
+          "pattern": [
+            {
+              "regexp": "^(.+):(\\d+):(\\d+): (.+)$",
+              "file": 1,
+              "line": 2,
+              "column": 3,
+              "message": 4
+            }
+          ]
+        }
+      ]
+    },
   ]
 }
