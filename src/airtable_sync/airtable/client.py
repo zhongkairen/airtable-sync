@@ -26,7 +26,7 @@ class AirtableClient:
     @property
     def table_fields_schema(self) -> dict:
         return {field_schema.name: field_schema.type for field_schema in self._schema_fields}
-    
+
     @property
     def _schema_fields(self) -> list[FieldSchema]:
         return self.table_schema.fields
@@ -38,8 +38,8 @@ class AirtableClient:
     def read_records(self):
         """
         Reads all records from the Airtable table and stores them in the `records` attribute.
-        This method fetches all entries from the Airtable table and creates a list of 
-        `AirtableRecord` objects by reading each entry. The resulting list is then 
+        This method fetches all entries from the Airtable table and creates a list of
+        `AirtableRecord` objects by reading each entry. The resulting list is then
         assigned to the `records` attribute of the instance.
         Returns:
             None
@@ -87,7 +87,7 @@ class AirtableClient:
         Args:
             issue_number (int): The issue number of the record.
         Returns:
-            AirtableRecord or None: The record with the specified issue number if found, 
+            AirtableRecord or None: The record with the specified issue number if found,
                           otherwise None.
         """
         return next((r for r in self.records_in_current_repo if r.issue_number == issue_number), None)
@@ -98,7 +98,7 @@ class AirtableClient:
         Args:
             id (str): The ID of the record.
         Returns:
-            AirtableRecord or None: The record with the specified issue number if found, 
+            AirtableRecord or None: The record with the specified issue number if found,
                           otherwise None.
         """
         return next((r for r in self.records_in_current_repo if r.id == id), None)

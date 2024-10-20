@@ -58,7 +58,7 @@ class AirtableRecord:
         """
         Commits changes to the record by comparing the provided updated fields with the current fields.
         Args:
-            updated_record (dict): A dictionary containing the updated fields and their values. 
+            updated_record (dict): A dictionary containing the updated fields and their values.
                        It should have the structure:
                        {
                            "id": <record_id>,
@@ -92,7 +92,7 @@ class AirtableRecord:
                     mismatch_fields.append(
                         {"field": field, "expected": expected_value, "actual": value})
 
-             # Remove marked fields
+            # Remove marked fields
             for field in committed_fields:
                 self._updated_fields.pop(field, None)
 
@@ -168,7 +168,7 @@ class AirtableRecord:
         logger.debug(
             f"Record {self.issue_number} fields '{field}': {current_value} -> {value}")
 
-        if current_value is not None and type(current_value) != type(value):
+        if current_value is not None and not isinstance(current_value, type(value)):
             logger.warning(
                 f"Field type mismatch: {field} - {current_value} != {type(value)}")
             return

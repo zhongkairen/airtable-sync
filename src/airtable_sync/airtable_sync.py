@@ -67,7 +67,7 @@ class AirtableSync:
         Verifies the record field against the Airtable table fields schema.
         This method checks if the mandatory record fields are included in the table schema.
         Returns:
-            tuple: A tuple containing a boolean indicating if the validation was 
+            tuple: A tuple containing a boolean indicating if the validation was
             successful and an error message if it was not.
         """
         valid, error = AirtableRecord.validate_schema(
