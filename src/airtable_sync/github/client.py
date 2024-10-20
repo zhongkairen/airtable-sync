@@ -61,7 +61,7 @@ class GitHubClient:
             response_items = response['data']['node']['items']
             total_items += self._handle_issues_data(response_items['nodes'])
 
-            page_info = data = response_items['pageInfo']
+            page_info = response_items['pageInfo']
             has_next_page = page_info['hasNextPage']
             after_cursor = page_info['endCursor']
 
