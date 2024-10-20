@@ -19,7 +19,15 @@
     <script>
         const cacheBuster = Math.random().toString(36).slice(2);
         const url = `https://gist.githubusercontent.com/zhongkairen/584db1c30251ffee502796950b03f782/raw/run_history.csv?${cacheBuster}`;
-        let arrays = {};
+        const chartData = {
+            timestamps: [],
+            durations: [],
+            versions: [],
+            colors: [],
+            statuses: [],
+            types: []
+        };
+        const timeZone = 'Europe/Helsinki';
         fetch(url)
             .then(response => response.text())
             .then(data => {
@@ -29,25 +37,11 @@
             })
             .catch(error => console.error('Error fetching data:', error));
 
-        const rawData = '2024-10-18T21:43:46Z,46,workflow_dispatch,success,31s,v0.2.0';
-
-        // Function to parse the data
-        function parseData(raw) {
-            const lines = raw.trim().split('\n');
-            const timestamps = [];
-            const durations = [];
-            const versions = [];
-            const colors = [];
-            const warnings = [];
-            const types = [];
-
-            lines.forEach(line => {
-                const parts = line.trim().split(',');
-                const timestamp = parts[0];
-                const datetime = new Date(timestamp);
-
-                const timeStr = datetime.toLocaleString('en-US', {
-                    timeZone: 'Europe/Helsinki',
+        function formatTimestamp(timestamp, style) {
+            const datetime = new Date(timestamp);
+            if (style === 'local')
+                return datetime.toLocaleString('en-CA', {
+                    timeZone: timeZone,
                     year: 'numeric',
                     month: '2-digit',
                     day: '2-digit',
@@ -55,51 +49,64 @@
                     minute: '2-digit',
                     second: '2-digit',
                     hour12: false,
-                    timeZoneName: 'short',
-                });
-                timestamps.push(timeStr);
-                durations.push(parseFloat(parts[4]) || 0); // Convert duration to a number
-                versions.push(parts[5]); // Collect versions
-                types.push(parts[2]);
+                    // timeZoneName: 'never',
+                }).replace(',', '');
 
-                // Determine color and warning based on run type and status
-                const runType = parts[2];
-                const status = parts[3];
+            if (style === 'local-short')
+                return datetime.toLocaleString('en-US', {
+                    timeZone: 'Europe/Helsinki',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                }).replace(',', '');
 
-                if (status !== 'success') {
-                    colors.push('rgba(255, 99, 132, 0.5)'); // Red for failed runs
-                } else if (runType === 'manual') {
-                    colors.push('rgba(255, 206, 86, 0.5)'); // Yellow for manual runs
-                } else {
-                    colors.push('rgba(75, 192, 192, 0.5)'); // Teal for successful scheduled runs
-                }
-
-                // Add warning if status is not success
-                if (status !== 'success') {
-                    warnings.push('⚠️' + status);
-                } else {
-                    warnings.push(''); // No warning
-                }
-            });
-
-            arrays = { timestamps, durations, versions, colors, warnings, types };
+            if (style === 'utc')
+                return datetime.toISOString();
+            return datetime.toLocaleTimeString();
         }
 
-        // Parse the data
-        parseData(rawData);
+        // Function to parse the data
+        function parseData(raw) {
+            const lines = raw.trim().split('\n');
+            lines.forEach(line => {
+                // '2024-10-18T21:43:46Z,46,workflow_dispatch,success,31s,v0.2.0'
+                const [timestamp, runNumber, runType, status, duration, version] = line.trim().split(',');
+                const durationNum = parseFloat(duration) || 0;
 
+                const color = (() => {
+                    if (status !== 'success') {
+                        return 'rgba(255, 99, 132, 0.5)'; // Red for failed runs
+                    } else if (runType === 'manual') {
+                        return 'rgba(255, 206, 86, 0.5)'; // Yellow for manual runs
+                    }
+                    return 'rgba(75, 192, 192, 0.5)'; // Teal for successful scheduled runs
+                })();
+
+                // Add status if status is not success
+                const statusText = (status === 'success' ? '✅' : '⚠️') + status;
+
+                chartData.timestamps.push(timestamp);
+                chartData.durations.push(durationNum);
+                chartData.versions.push(version); // Collect versions
+                chartData.types.push(runType);
+                chartData.colors.push(color);
+                chartData.statuses.push(statusText);
+            });
+        }
         // Pagination variables
         let currentPage = 0;
         const itemsPerPage = 24; // Number of items to display per page
-        
+
         function updateChart(page) {
-            const totalItems = arrays.timestamps.length;
+            const totalItems = chartData.timestamps.length;
             const start = page * itemsPerPage;
             const end = start + itemsPerPage;
 
             // Update the chart data
-            myChart.data.labels = arrays.timestamps.slice(start, end);
-            myChart.data.datasets[0].data = arrays.durations.slice(start, end);
+            myChart.data.labels = chartData.timestamps.slice(start, end).map(timestamp => formatTimestamp(timestamp, 'local-short'));
+            myChart.data.datasets[0].data = chartData.durations.slice(start, end);
             myChart.update();
 
             // Update button states
@@ -114,10 +121,10 @@
             data: {
                 labels: [], // Initially empty; will be filled on chart update
                 datasets: [{
-                    label: 'Duration (seconds)',
+                    label: `Duration (seconds) - Time (${timeZone})`,
                     data: [],
-                    backgroundColor: arrays.colors,
-                    borderColor: arrays.colors.map(color => color.replace(/0\.5/, '1')), // Full opacity for borders
+                    backgroundColor: chartData.colors,
+                    borderColor: chartData.colors.map(color => color.replace(/0\.5/, '1')), // Full opacity for borders
                     borderWidth: 1,
                     hoverBackgroundColor: 'rgba(255, 206, 86, 0.2)',
                     hoverBorderColor: 'rgba(255, 206, 86, 1)'
@@ -135,7 +142,19 @@
                         callbacks: {
                             label: function (tooltipItem) {
                                 const index = tooltipItem.dataIndex;
-                                return [`Duration: ${tooltipItem.raw} seconds`, warnings[index]];
+                                const status = chartData.statuses[index];
+                                const type = chartData.types[index];
+                                return [`Duration: ${tooltipItem.raw} seconds`, `Type: ${type}`, `Status: ${status}`];
+                            }
+                            ,
+                            title: function (tooltipItem) {
+                                const index = tooltipItem[0].dataIndex;
+                                const timestamp = chartData.timestamps[index]; // Show date/time on hover
+                                return formatTimestamp(timestamp, 'local');
+                                // return `Time: ${timestamp}`;
+
+                                // chartData.timestamps.slice(start, end);
+                                // return ' seconds';
                             }
                         }
                     }
@@ -155,7 +174,7 @@
         });
 
         document.getElementById('nextBtn').addEventListener('click', function () {
-            if ((currentPage + 1) * itemsPerPage < arrays.timestamps.length) {
+            if ((currentPage + 1) * itemsPerPage < chartData.timestamps.length) {
                 currentPage++;
                 updateChart(currentPage);
             }
