@@ -21,18 +21,18 @@ fetch(url)
     })
     .catch(error => console.error('Error fetching data:', error));
 
-function formatTimestamp(datetime, style) {
-    if (style.endsWith('-short')) return formatDateTime(datetime, style);
+function formatTimestamp(dateTime, style) {
+    if (style.endsWith('-short')) return formatDateTime(dateTime, style);
 
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const dayOfWeek = datetime.getDay();
+    const dayOfWeek = dateTime.getDay();
     const dayOfWeekStr = daysOfWeek[dayOfWeek];
-    return `${dayOfWeekStr} ${formatDateTime(datetime, style)}`;
+    return `${dayOfWeekStr} ${formatDateTime(dateTime, style)}`;
 }
 
-function formatDateTime(datetime, style) {
+function formatDateTime(dateTime, style) {
     if (style === 'local')
-        return datetime.toLocaleString('en-CA', {
+        return dateTime.toLocaleString('en-CA', {
             timeZone: timeZone,
             year: 'numeric',
             month: '2-digit',
@@ -44,7 +44,7 @@ function formatDateTime(datetime, style) {
         }).replace(',', '');
 
     if (style === 'local-short')
-        return datetime.toLocaleString('en-US', {
+        return dateTime.toLocaleString('en-US', {
             timeZone: 'Europe/Helsinki',
             month: '2-digit',
             day: '2-digit',
@@ -54,8 +54,8 @@ function formatDateTime(datetime, style) {
         }).replace(',', '');
 
     if (style === 'utc')
-        return datetime.toISOString();
-    return datetime.toLocaleTimeString();
+        return dateTime.toISOString();
+    return dateTime.toLocaleTimeString();
 }
 
 // Function to parse the data
