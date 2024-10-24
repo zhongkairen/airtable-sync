@@ -23,9 +23,22 @@ jobs:
           echo "pwd=`pwd`"
           # Construct the GitHub API URL directly with the built-in variable
           releases_api_url="https://api.github.com/repos/${{ github.repository }}/releases/latest"
+          fallback_url="https://github.com/${{ github.repository }}/releases/download/v0.2.0/airtable_sync-0.2.0-py3-none-any.whl"
+          response=$(curl -s $releases_api_url)
+          echo "Release URL: $releases_api_url"
+          echo "Response: $response"
 
-          wheel_file_url=$(curl -s $releases_api_url | jq -r '.assets[] | select(.name | test("airtable_sync-.*\\.whl")) | .browser_download_url')
+          # Use jq to check if the response is valid JSON
+          if echo "$response" | jq . > /dev/null 2>&1; then
+            wheel_file_url=$(echo "$response" | jq -r '.assets[]? | select(.name | test("airtable_sync-.*\\.whl")) | .browser_download_url')
+          else
+            wheel_file_url=$fallback_url
+            echo "::warning::Invalid JSON detected from $releases_api_url. Falling back to $fallback_url"
+          fi
+
           wheel_file_name=$(basename $wheel_file_url)
+
+          echo "Downloading wheel file '$wheel_file_name' from $wheel_file_url"
           curl -L -o $wheel_file_name $wheel_file_url || { echo "Failed to download wheel file"; exit 1; }
 
           # Check if the wheel file was downloaded successfully
