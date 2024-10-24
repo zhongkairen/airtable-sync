@@ -3,6 +3,7 @@ const cacheBuster = Math.random().toString(36).slice(2);
 const url = `https://gist.githubusercontent.com/zhongkairen/584db1c30251ffee502796950b03f782/raw/run_history.csv?${cacheBuster}`;
 const chartData = {
     timestamps: [],
+    runNumbers: [],
     durations: [],
     versions: [],
     colors: [],
@@ -70,6 +71,7 @@ function parseData(raw) {
         const statusText = (status === 'success' ? '✅' : '⚠️') + status;
 
         chartData.timestamps.push(new Date(timestamp));
+        chartData.runNumbers.push(runNumber);
         chartData.durations.push(durationNum);
         chartData.versions.push(version); // Collect versions
         chartData.types.push(runType);
@@ -139,9 +141,10 @@ const myChart = new Chart(ctx, {
                 callbacks: {
                     label: function (tooltipItem) {
                         const index = currentCursor + tooltipItem.dataIndex;
+                        const runNumber = chartData.runNumbers[index];
                         const status = chartData.statuses[index];
                         const type = chartData.types[index];
-                        return [`Duration: ${tooltipItem.raw} seconds`, `Type: ${type}`, `Status: ${status}`];
+                        return [`Run number: ${runNumber}`, `Duration: ${tooltipItem.raw} seconds`, `Type: ${type}`, `Status: ${status}`];
                     }
                     ,
                     title: function (tooltipItem) {
