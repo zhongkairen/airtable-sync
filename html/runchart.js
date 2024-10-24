@@ -22,6 +22,15 @@ fetch(url)
     .catch(error => console.error('Error fetching data:', error));
 
 function formatTimestamp(datetime, style) {
+    if (style.endsWith('-short')) return formatDateTime(datetime, style);
+
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dayOfWeek = datetime.getDay();
+    const dayOfWeekStr = daysOfWeek[dayOfWeek];
+    return `${dayOfWeekStr} ${formatDateTime(datetime, style)}`;
+}
+
+function formatDateTime(datetime, style) {
     if (style === 'local')
         return datetime.toLocaleString('en-CA', {
             timeZone: timeZone,
