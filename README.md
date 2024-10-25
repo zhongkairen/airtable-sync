@@ -42,18 +42,21 @@ Set the proper file permission.
 chmod 600 ~/.ssh/airtable.records_wr.schema_base_r.github_sync_base.pat
 ```
 ### Create GitHub access token
-Go to , and create a new personal access token with the name `gh.read.repo.project.user.pat `, select the following access scopes:
-```
-todo: add scopes
-```
-❗Make sure you copy the PAT immediately when prompted, the key won't re-appear after the prompt is dismissed.\
+Go to GitHub personal settings, and create a fine-grained personal access token with the name `gh.read.repo.project.pat`,
+**Resource owner**: `Unity-Technologies` \
+**Repository access**: Check _Only select repositories_, then choose `Unity-Technologies/mz-<your>-team`
+
+Use the following access scopes \
+**Repository permissions**: `Issues` and `Metadata` as Read-only access. \
+**Organization permissions**: `Projects` as Read-only access. \
+❗Make sure you copy the token text immediately when prompted, the key won't re-appear after the prompt is dismissed.\
 Create a pat file by pasting into the terminal:
 ```bash
-echo "ghp_38m03<replace with your own token>" > ~/.ssh/gh.read.repo.project.user.pat
+echo "github_pat_<replace with your own token>" > ~/.ssh/gh.read.repo.project.pat
 ```
 Set the proper file permission.
 ```bash
-chmod 600 ~/.ssh/gh.read.repo.project.user.pat
+chmod 600 ~/.ssh/gh.read.repo.project.pat
 ```
 ### Configuration file
 To use the module, a `config.json` file must be placed in either the current working directory or the package installation directory.
