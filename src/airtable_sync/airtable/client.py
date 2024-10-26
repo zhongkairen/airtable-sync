@@ -9,6 +9,8 @@ logger = CustomLogger(__name__)
 
 
 class AirtableClient:
+    """Client for interacting with an Airtable table."""
+
     def __init__(self, config: AirtableConfig):
         self.config = config
         self.api = Api(self.config.token)
@@ -19,16 +21,19 @@ class AirtableClient:
 
     @property
     def table_schema(self) -> TableSchema:
+        """Schema of the Airtable table."""
         if not self._table_schema:
             self._table_schema = self.table.schema()
         return self._table_schema
 
     @property
     def table_fields_schema(self) -> dict:
+        """Schema of the Airtable table fields, name-type pairs."""
         return {field_schema.name: field_schema.type for field_schema in self._schema_fields}
 
     @property
     def _schema_fields(self) -> list[FieldSchema]:
+        """List of field schemas in the Airtable schema."""
         return self.table_schema.fields
 
     def field_in_schema(self, field_name) -> bool:
@@ -55,6 +60,7 @@ class AirtableClient:
 
     @property
     def current_repo(self):
+        """Source repository name for filtering records."""
         return self._current_repo
 
     @current_repo.setter
@@ -63,21 +69,12 @@ class AirtableClient:
 
     @property
     def records(self) -> list[AirtableRecord]:
-        """
-        Retrieve the list of all Airtable records in the table.
-
-        Returns:
-            list[AirtableRecord]: A list of AirtableRecord objects.
-        """
+        """List of all Airtable records in the table."""
         return self._records
 
     @property
     def records_in_current_repo(self) -> list[AirtableRecord]:
-        """
-        Retrieves a list of Airtable records that belong to the current repository.
-        Returns:
-            list[AirtableRecord]: A list of AirtableRecord objects that are associated with the current repository.
-        """
+        """List of Airtable records that belong to the current repository."""
         return [
             record for record in self.records if record.repo_name == self.current_repo]
 
@@ -93,7 +90,13 @@ class AirtableClient:
         return next((r for r in self.records_in_current_repo if r.id == id), None)
 
     def batch_update(self, update_dict_list) -> UpdateResult:
-        """Process the batch updates and commit changes."""
+        """
+        Process the batch updates and commit changes.
+        Args:
+            update_dict_list (list): A list of dictionaries containing the updates to be applied.
+        Returns:
+            UpdateResult: An object containing the result of the batch update operation, including the status of each record update.
+        """
         updated_record_list = self.table.batch_update(update_dict_list)
 
         sync_result = UpdateResult()
