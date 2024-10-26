@@ -42,7 +42,7 @@ Set the proper file permission.
 chmod 600 ~/.ssh/airtable.records_wr.schema_base_r.github_sync_base.pat
 ```
 ### Create GitHub access token
-Go to GitHub personal settings, and create a fine-grained personal access token with the name `gh.read.repo.project.pat`,
+Go to GitHub personal account settings > Developer settings > Personal access tokens > Fine-grained tokens, click `Generate new token` to create a fine-grained personal access token with the name `gh.read.repo.project.pat`,
 **Resource owner**: `Unity-Technologies` \
 **Repository access**: Check _Only select repositories_, then choose `Unity-Technologies/mz-<your>-team`
 
