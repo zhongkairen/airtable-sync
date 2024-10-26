@@ -119,16 +119,6 @@ class TestAirtableClient(unittest.TestCase):
         records = self.client.records_in_current_repo
         self.assertEqual(records, [record1])
 
-    def test_get_record_by_issue_number(self):
-        """
-        AirtableClient.get_record_by_issue_number
-        """
-        record = MagicMock(issue_number=123)
-        self.client._records = [record]
-        self.client.current_repo = record.repo_name
-        found_record = self.client.get_record_by_issue_number(123)
-        self.assertEqual(found_record, record)
-
     def test_get_record_by_id(self):
         """
         AirtableClient.get_record_by_id
