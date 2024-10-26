@@ -137,5 +137,35 @@
         }
       ]
     },
+    {
+      "label": "vulture src",
+      "type": "shell",
+      "command": "vulture",
+      "args": [
+        "src"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "vulture tests",
+      "type": "shell",
+      "command": "vulture",
+      "args": [
+        "test"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "vulture workflows",
+      "type": "shell",
+      "command": "vulture",
+      "args": [
+        ".github/workflows"
+      ],
+      "group": "build",
+      "problemMatcher": []
+    }
   ]
 }

@@ -27,16 +27,14 @@ class CustomLogger:
     def error(self, message, *args, **kwargs):
         self._log_with_caller_info(logging.ERROR, message, *args, **kwargs)
 
-    def critical(self, message, *args, **kwargs):
-        self._log_with_caller_info(logging.CRITICAL, message, *args, **kwargs)
-
     def _log_with_caller_info(self, level, message, *args, **kwargs):
         # Get the calling function's frame
         frame = inspect.stack()[2]
         filename = frame.filename.split('/')[-1]  # Get the filename
         lineno = frame.lineno  # Get the line number
         method_name = frame.function  # Get the method name
-        class_name = frame.frame.f_locals.get('self', None).__class__.__name__ if 'self' in frame.frame.f_locals else ''  # Get the class name
+        class_name = frame.frame.f_locals.get(
+            'self', None).__class__.__name__ if 'self' in frame.frame.f_locals else ''  # Get the class name
         class_name = f"{class_name}." if class_name else ''
 
         # Log the message with the correct filename and line number

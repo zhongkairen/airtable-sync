@@ -24,12 +24,6 @@ class GitHubIssue:
         self.url = base_data.get('url', self.url)
         self.title = base_data.get('title')
         self.body = base_data.get('body')
-        self.state = base_data.get('state')
-        self.closed = base_data.get('closed')
-        self.assignees = [assignee.get('login')
-                          for assignee in base_data.get('assignees', {}).get('nodes', [])]
-        self.labels = [label.get('name')
-                       for label in base_data.get('labels', {}).get('nodes', [])]
         self.handle_field_values(fields)
 
     def __str__(self):
@@ -40,11 +34,9 @@ class GitHubIssue:
         lines = []
 
         for attr in self.__dict__:
-            if attr in ['url', 'title', 'body', 'assignees', 'labels', 'state', 'closed']:
+            if attr in ['url', 'title', 'body']:
                 val = self.__dict__[attr]
-                if attr == 'assignees' or attr == 'labels':
-                    val = ', '.join(val)
-                elif attr == 'body':
+                if attr == 'body':
                     val = body
 
                 lines.append(f"{attr}: {val}")

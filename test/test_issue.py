@@ -45,10 +45,6 @@ class TestGitHubIssue(unittest.TestCase):
             self.issue.url, 'https://github.com/user/repo/issues/2')
         self.assertEqual(self.issue.title, 'Issue title')
         self.assertEqual(self.issue.body, 'Issue body')
-        self.assertEqual(self.issue.state, 'open')
-        self.assertFalse(self.issue.closed)
-        self.assertEqual(self.issue.assignees, ['user1', 'user2'])
-        self.assertEqual(self.issue.labels, ['bug', 'enhancement'])
         self.assertEqual(self.issue.fields['priority'], 'High')
         self.assertEqual(self.issue.fields['estimate'], 5)
         self.assertEqual(self.issue.fields['due_date'], datetime.strptime(
@@ -61,10 +57,6 @@ class TestGitHubIssue(unittest.TestCase):
     def test_str(self):
         self.issue.title = 'Issue title'
         self.issue.body = 'Issue body'
-        self.issue.state = 'open'
-        self.issue.closed = False
-        self.issue.assignees = ['user1', 'user2']
-        self.issue.labels = ['bug', 'enhancement']
         self.issue.fields['priority'] = 'High'
         actual_strs = str(self.issue).split('\n')
         indent = ' ' * 2
@@ -72,10 +64,6 @@ class TestGitHubIssue(unittest.TestCase):
             "url: https://github.com/user/repo/issues/1",
             "title: Issue title",
             "body: Issue body",
-            "assignees: user1, user2",
-            "labels: bug, enhancement",
-            "state: open",
-            "closed: False",
             "priority: High"
         ]
         # Verify all the lines are present in the actual string

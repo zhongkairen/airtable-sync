@@ -81,17 +81,6 @@ class AirtableClient:
         return [
             record for record in self.records if record.repo_name == self.current_repo]
 
-    def get_record_by_issue_number(self, issue_number: int) -> AirtableRecord:
-        """
-        Find a record by its issue number.
-        Args:
-            issue_number (int): The issue number of the record.
-        Returns:
-            AirtableRecord or None: The record with the specified issue number if found,
-                          otherwise None.
-        """
-        return next((r for r in self.records_in_current_repo if r.issue_number == issue_number), None)
-
     def get_record_by_id(self, id: str) -> AirtableRecord:
         """
         Find a record by its ID.

@@ -1,7 +1,7 @@
+from datetime import datetime
 from urllib.parse import urlparse
 from pyairtable.api.types import RecordDict
 from ..custom_logger import CustomLogger
-from .field_converter import FieldConverter
 
 logger = CustomLogger(__name__)
 
@@ -160,7 +160,7 @@ class AirtableRecord:
             - The method does not update the field value if it is the same as the current value.
         """
         current_value = self._record_dict.get("fields").get(field)
-        value = FieldConverter.format(value)
+        value = self._format(value)
 
         if current_value == value:
             return
@@ -174,3 +174,18 @@ class AirtableRecord:
             return
 
         self._updated_fields[field] = value
+
+    @staticmethod
+    def _format(value):
+        """
+        Formats the input value based on its type.
+        Args:
+            value: The input value to be formatted. It can be of type str, int, float, datetime, or any other type.
+        Returns:
+            The formatted value:
+            - If `value` is a datetime object, it returns `value` formatted as a string in the "YYYY-MM-DD" format.
+            - Otherwise, it returns the string representation of `value`.
+        """
+        if isinstance(value, datetime):
+            return value.strftime("%Y-%m-%d")
+        return value
