@@ -42,7 +42,7 @@ Set the proper file permission.
 chmod 600 ~/.ssh/airtable.records_wr.schema_base_r.github_sync_base.pat
 ```
 ### Create GitHub access token
-Go to GitHub personal account settings > Developer settings > Personal access tokens > Fine-grained tokens, click `Generate new token` to create a fine-grained personal access token with the name `gh.read.repo.project.pat`,
+Go to GitHub personal account settings » Developer settings » Personal access tokens » Fine-grained tokens, click `Generate new token` to create a fine-grained personal access token with the name `gh.read.repo.project.pat`,
 **Resource owner**: `Unity-Technologies` \
 **Repository access**: Check _Only select repositories_, then choose `Unity-Technologies/mz-<your>-team`
 
@@ -99,7 +99,7 @@ or directly using the token
 
 #### GitHub secrets
 To run a workflow that automates the sync, add the tokens to GitHub repo settings as secrets.
-Go to your repo, e.g. `mz-ad-request-team` Settings tab > Secrets and variables > Actions, in Repository secrets section click `New repository secret`. The names of the secret should be consistent with variable names in the workflow `airtable-sync.yml`.
+Go to your repo, e.g. `mz-ad-request-team` Settings tab » Secrets and variables » Actions, in Repository secrets section click `New repository secret`. The names of the secret should be consistent with variable names in the workflow `airtable-sync.yml`.
 ```yaml
 env:
     GITHUB_TOKEN: ${{ secrets.AIRSYNC_GITHUB_TOKEN }}
