@@ -7,11 +7,15 @@ logger = CustomLogger(__name__)
 
 
 class AirtableRecord:
-    """
-    A class to represent a record in Airtable.
-    """
+    """Class to represent a record in Airtable."""
+
+    """List of compulsory fields for the record."""
     _required_fields = ["Title", "Issue Link", "Issue Number"]
+
+    """Record dictionary to store the record data."""
     _record_dict: RecordDict
+
+    """Dictionary to store the updated fields."""
     _updated_fields: dict
 
     def __init__(self, record_dict: RecordDict):
@@ -19,23 +23,28 @@ class AirtableRecord:
         self._updated_fields = {}
 
     @property
-    def id(self):
+    def id(self) -> str:
+        """ID of the record."""
         return self._record_dict.get("id")
 
     @property
-    def title(self):
+    def title(self) -> str:
+        """Title of the record."""
         return self._record_dict.get("fields", {}).get("Title")
 
     @property
     def issue_number(self) -> int:
+        """Issue number in the record, corresponds to the GitHub issue number."""
         return int(self._record_dict.get("fields", {}).get("Issue Number"))
 
     @property
-    def issue_link(self):
+    def issue_link(self) -> str:
+        """Link to the GitHub issue in the record."""
         return self._record_dict.get("fields", {}).get("Issue Link")
 
     @property
-    def repo_name(self):
+    def repo_name(self) -> str:
+        """Repository name extracted from the issue link."""
         path_parts = urlparse(self.issue_link).path.split('/')
         if "issues" in path_parts:
             return path_parts[path_parts.index("issues") - 1]
@@ -45,10 +54,7 @@ class AirtableRecord:
 
     @property
     def updated_fields(self) -> dict:
-        """
-        Returns a dictionary containing the record's ID and updated fields.
-        Returns:
-            dict: A dictionary with two keys:
+        """Dictionary containing the record's ID and updated fields.
             - "id": The ID of the record.
             - "fields": The updated fields of the record.
         """
@@ -56,7 +62,7 @@ class AirtableRecord:
 
     def commit_changes(self, updated_record: dict) -> tuple:
         """
-        Commits changes to the record by comparing the provided updated fields with the current fields.
+        Commit changes to the record by comparing the provided updated fields with the current fields.
         Args:
             updated_record (dict): A dictionary containing the updated fields and their values.
                        It should have the structure:
@@ -107,7 +113,7 @@ class AirtableRecord:
     @staticmethod
     def validate_schema(schema: dict) -> tuple:
         """
-        Validates that the provided schema contains all required fields.
+        Validate that the provided schema contains all required fields.
         Args:
             schema (dict): The schema to validate.
         Returns:
@@ -122,13 +128,15 @@ class AirtableRecord:
 
     def __str__(self):
         """
-        Returns a string representation of the object.
-        The string includes the issue number (right-justified to 5 characters),
-        issue link, the first 10 characters of the title, and a comma-separated
-        list of key-value pairs from the fields dictionary.
-        Returns:
-            str: A formatted string representing the object.
+        String representation of the object.
+        The string includes:
+        - The issue number, right-justified to 5 characters.
+        - The repository name.
+        - The first 16 characters of the title.
+        - A comma-separated list of key-value pairs from the fields dictionary.
+          - If the key is "Body" and the value is a string, only the first 40 characters of the value are included, followed by ellipses.
         """
+
         fields_str = ', '.join(
             f"{key}: {value[:40]}..." if key == "Body" and isinstance(
                 value, str) else f"{key}: {value}"
@@ -138,7 +146,7 @@ class AirtableRecord:
 
     def set_fields(self, fields: dict) -> dict:
         """
-        Sets multiple fields for the record.
+        Set multiple fields for the record.
         Args:
             fields (dict): A dictionary where keys are field names and values are the values to set.
         Returns:
@@ -150,7 +158,7 @@ class AirtableRecord:
 
     def _set_field(self, field: str, value):
         """
-        Sets the value of a specified field and marks it for update.
+        Set the value of a specified field and marks it for update.
         Args:
             field (str): The name of the field to set.
             value: The value to set for the field.
@@ -178,7 +186,7 @@ class AirtableRecord:
     @staticmethod
     def _format(value):
         """
-        Formats the input value based on its type.
+        Format the input value based on its type.
         Args:
             value: The input value to be formatted. It can be of type str, int, float, datetime, or any other type.
         Returns:
