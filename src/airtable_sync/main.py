@@ -10,6 +10,7 @@ logger = CustomLogger(__name__)
 
 
 def parse_arguments():
+    """Parse the command line arguments."""
     # Set up argument parser
     parser = argparse.ArgumentParser(
         description="A script that logs at different levels.")
@@ -37,10 +38,13 @@ def parse_arguments():
     return log_level
 
 
-def get_config_file_path():
-    # Order of lookup:
-    #   current working directory,
-    #   same directory as the script
+def get_config_file_path() -> str:
+    """
+    Get the path to the configuration file.
+    Order of lookup:
+    - current working directory
+    - same directory as the script
+    """
     CONFIG_FILE_NAME = 'config.json'
     current_dir = os.getcwd()
     script_dir = os.path.dirname(os.path.abspath(__file__))

@@ -11,12 +11,16 @@ logger = CustomLogger(__name__)
 
 
 class AirtableSync:
-    """
-    AirtableSync class to synchronize records between Airtable and GitHub.
-    """
+    """Class to synchronize records between Airtable and GitHub."""
     _field_map = None
 
     def __init__(self, airtable_config: AirtableConfig, github_config: GitHubConfig):
+        """
+        Initialize the AirtableSync class with the provided Airtable and GitHub configurations.
+        Args:
+            airtable_config (AirtableConfig): Configuration object for Airtable.
+            github_config (GitHubConfig): Configuration object for GitHub.
+        """
         self.airtable_config = airtable_config
         self.airtable = AirtableClient(airtable_config)
         self.github = GitHubClient(github_config)
@@ -36,11 +40,11 @@ class AirtableSync:
         self.github.fetch_project_items()
 
     @property
-    def field_map(self):
-        """Map the fields between GitHub and Airtable"""
+    def field_map(self) -> dict:
+        """Map the fields from GitHub to Airtable"""
         return self._field_map
 
-    def _verify_sync_fields(self):
+    def _verify_sync_fields(self) -> bool:
         """
         Verify the fields to be synced are in the Airtable table schema.
         This method checks if all the fields synced from GitHub to Airtable exist in the Airtable table schema.
@@ -62,13 +66,11 @@ class AirtableSync:
                 f"Unknown field(s): {stringify(missing_fields)} not found in Airtable table schema: {stringify(list(self.airtable.table_fields_schema.keys()))}.")
         return len(missing_fields) == 0
 
-    def _verify_record_field(self):
+    def _verify_record_field(self) -> bool:
         """
-        Verifies the record field against the Airtable table fields schema.
+        Verify the record field against the Airtable table fields schema.
         This method checks if the mandatory record fields are included in the table schema.
-        Returns:
-            tuple: A tuple containing a boolean indicating if the validation was
-            successful and an error message if it was not.
+        Returns: boolean indicating if the validation was successful
         """
         valid, error = AirtableRecord.validate_schema(
             self.airtable.table_fields_schema)
@@ -98,6 +100,15 @@ class AirtableSync:
         self._log_sync_result(update_result, logger)
 
     def _prep_sync(self):
+        """
+        Prepare the synchronization process between Airtable and GitHub.
+        This method performs the following steps:
+        1. Verifies that the necessary fields for synchronization are present in the Airtable table schema.
+        2. Reads the records from Airtable.
+        3. Reads the issues from GitHub.
+        Raises:
+            Exception: If the necessary fields for synchronization are missing in the Airtable table schema.
+        """
         # Verify the fields to be synced
         if not (self._verify_sync_fields() and self._verify_record_field()):
             raise Exception(
@@ -109,12 +120,23 @@ class AirtableSync:
         # Read the issues from GitHub
         self.read_issues()
 
-    def _get_issue(self, record):
-        """Retrieve the GitHub issue or create one from an Airtable record."""
+    def _get_issue(self, record: AirtableRecord) -> GitHubIssue:
+        """
+        Retrieve the GitHub issue or create one from an Airtable record.
+        Args:
+            record: An object representing an Airtable record. It should have an attribute `issue_number`.
+        Returns:
+            The GitHub issue corresponding to the `issue_number` in the record.
+        """
         return self.github.fetch_issue(record.issue_number)
 
     def _log_sync_result(self, sync_result: UpdateResult, logger):
-        """Log the final sync result based on update counts."""
+        """
+        Log the final sync result based on update counts.
+        Args:
+        sync_result (UpdateResult): The result of the sync operation, containing information about errors and updates.
+        logger: The logger instance used to log messages.
+        """
         if sync_result.error:
             logger.error(sync_result.error)
 
@@ -124,7 +146,7 @@ class AirtableSync:
         logger.info(
             f"synced {len(self.airtable.records_in_current_repo)} record(s): {sync_result}")
 
-    def _update_fields(self, record, issue):
+    def _update_fields(self, record: AirtableRecord, issue: GitHubIssue) -> dict:
         """
         Update the fields in the Airtable record (target) from the GitHub issue (source).
         Args:

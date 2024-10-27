@@ -108,7 +108,7 @@ class TestGitHubIssue(unittest.TestCase):
             {'field': {'name': 'Unknown'}, 'temp': 1},
             {'field': {'alias': 'Tower'}, 'text': 'High'},
         ]
-        self.issue.handle_field_values(field_values)
+        self.issue._handle_field_values(field_values)
         self.assertEqual(self.issue.fields['priority'], 'High')
         self.assertEqual(self.issue.fields['estimate'], 5)
         self.assertEqual(self.issue.fields['due_date'], datetime.strptime(

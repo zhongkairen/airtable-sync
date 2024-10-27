@@ -7,6 +7,7 @@ logger = CustomLogger(__name__)
 
 
 class FieldType(Enum):
+    """Enumeration of projectV2 field types."""
     Text = "TEXT"
     Number = "NUMBER"
     Date = "DATE"
@@ -15,18 +16,27 @@ class FieldType(Enum):
 
 
 class GitHubIssue:
+    """Class to represent an issue in GitHub."""
+
     def __init__(self, url: str):
         self.url = url
         self.fields = {}
 
-    def load_fields(self, base_data, fields):
+    def load_fields(self, base_data: dict, fields: dict):
+        """Load the issue fields from the data."""
         fields = fields.get('fieldValues').get('nodes')
         self.url = base_data.get('url', self.url)
         self.title = base_data.get('title')
         self.body = base_data.get('body')
-        self.handle_field_values(fields)
+        self._handle_field_values(fields)
 
     def __str__(self):
+        """
+        String representation of the issue.
+        the URL, title, and a truncated version of the body (first 50 characters of
+        the first line). Additionally, it includes all custom fields defined in the
+        `fields` attribute.
+        """
         body = self.body
         body = (body if body else "").strip()
         body = body.splitlines()[0] if body else ""
@@ -48,15 +58,19 @@ class GitHubIssue:
         return '\n'.join(f"{indent}{line}" for line in lines)
 
     @property
-    def is_epic(self):
-        # Ignore irrelevant text such as emojis for easier comparison
-        # remove non-alphanum chars and leading/trailing spaces
-        # e.g. "🚀 Epic" -> "Epic"
+    def is_epic(self) -> bool:
+        """
+        If the issue is an epic type.
+        Ignore irrelevant text such as emojis for easier comparison
+        remove non-alphanum chars and leading/trailing spaces
+        e.g. "🚀 Epic" -> "Epic"
+        """
         issue_type = self.fields.get('issue_type', '')
         issue_type = re.sub(r'[^a-zA-Z0-9 ]', '', issue_type).strip()
         return self.fields.get('issue_type') == 'Epic'
 
-    def handle_field_values(self, field_values):
+    def _handle_field_values(self, field_values: dict):
+        """Handle the field values and add them to the issue."""
         for field_value in field_values:
             field = field_value.get('field', {})
             field_name = field.get('name')
