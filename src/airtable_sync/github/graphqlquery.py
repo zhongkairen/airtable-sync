@@ -3,10 +3,13 @@ from .config import GitHubConfig
 
 
 class GraphQLQuery:
+    """Class that constructs GraphQL queries for fetching data from a GitHub repository."""
+
     def __init__(self, github_config: GitHubConfig):
         self.github_config = github_config
 
-    def issue(self, issue_number: int):
+    def issue(self, issue_number: int) -> str:
+        """GraphQL query to fetch a single issue with projectV2 fields from a GitHub repository."""
         return f"""
         query {{
         repository(owner: "{self.github_config.repo_owner}", name: "{self.github_config.repo_name}") {{
@@ -79,8 +82,9 @@ class GraphQLQuery:
         }}
         """
 
-    def issues(self, after_cursor: int, page_size: int = 20):
-        """Constructs a GraphQL query to fetch issues from a GitHub project.
+    def issues(self, after_cursor: int, page_size: int = 20) -> str:
+        """
+        GraphQL query to fetch issues with projectV2 fields from a GitHub project.
            Pull requests and draft issues are not included in the query, but will be included in the query response.
         Args:
             after_cursor (int): The cursor after which to fetch the next set of issues.
@@ -88,7 +92,7 @@ class GraphQLQuery:
         Returns:
             str: The constructed GraphQL query string.
         """
-        query = f"""
+        return f"""
         query {{
         node(id: "{self.github_config.project_id}") {{
             ... on ProjectV2 {{
@@ -174,10 +178,10 @@ class GraphQLQuery:
         }}
         }}
         """
-        return query
 
-    def project(self):
-        query = f"""
+    def project(self) -> str:
+        """GraphQL query to fetch all projects from a GitHub repository."""
+        return f"""
         query {{
         repository(owner: "{self.github_config.repo_owner}", name: "{self.github_config.repo_name}") {{
             projectsV2(first: 100) {{
@@ -189,7 +193,7 @@ class GraphQLQuery:
         }}
         }}
         """
-        return query
 
-    def headers(self):
+    def headers(self) -> dict:
+        """Headers for the GraphQL query request."""
         return {"Authorization": f"Bearer {self.github_config.token}"}

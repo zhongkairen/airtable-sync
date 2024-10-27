@@ -8,7 +8,10 @@ logger = CustomLogger(__name__)
 
 
 class GitHubClient:
+    """Client for interacting with a GitHub repository."""
+
     def __init__(self, github_config: GitHubConfig):
+        """Initializes the GitHub client with the given configuration."""
         self.github_config = github_config
         self._query = GraphQLQuery(github_config)
         self._client = GraphqlClient(endpoint="https://api.github.com/graphql")
@@ -16,14 +19,19 @@ class GitHubClient:
 
     @property
     def config(self):
+        """GitHub configuration."""
         return self.github_config
 
     @property
     def query(self):
+        """GitHub GraphQL query."""
         return self._query
 
     def fetch_project_id(self):
-        """Fetches the project ID for the given project name."""
+        """
+        Fetch the project ID for the given project name.
+        If the project name is found, it will be set to configuration, otherwise an exception is raised.
+        """
         response = self._client.execute(
             query=self._query.project(), headers=self._query.headers())
 
@@ -41,7 +49,7 @@ class GitHubClient:
             f"Failed to fetch project ID for project: {self.github_config.project_name}")
 
     def fetch_project_items(self):
-        """Fetches items from the GitHub project and their field values."""
+        """Fetch items from the GitHub project and their field values."""
         after_cursor = None
         has_next_page = True
         total_items = 0
@@ -70,8 +78,8 @@ class GitHubClient:
         for issue in self.epic_issues:
             logger.debug(f"{issue.issue_number} - {issue.title}")
 
-    def fetch_issue(self, issue_number: int):
-        """Fetches the issue details from GitHub."""
+    def fetch_issue(self, issue_number: int) -> GitHubIssue:
+        """Fetch the issue details from GitHub and return the issue object."""
         issue = self.get_issue(issue_number)
         if issue:
             return issue
@@ -90,12 +98,20 @@ class GitHubClient:
         issue.load_fields(item, first_issue_fields)
         return issue
 
-    def get_issue(self, issue_number: int):
-        """Fetches the issue details from GitHub."""
+    def get_issue(self, issue_number: int) -> GitHubIssue:
+        """Get the issue details from loaded epic issue list."""
         return next((issue for issue in self.epic_issues if issue.issue_number == issue_number), None)
 
-    def _handle_issues_data(self, items):
-        """Extracts and prints the issue titles and field values from the response."""
+    def _handle_issues_data(self, items) -> int:
+        """
+        Extract and process issue data from the provided items.
+        Look for issues marked as epics and append them to the `epic_issues` list.
+        Args:
+            items (list): A list of dictionaries containing issue data.
+        Returns:
+            int: The number of items processed.
+        """
+
         epic_issues = []
         for item in items:
             content = item.get('content')
